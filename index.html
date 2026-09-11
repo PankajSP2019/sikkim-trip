@@ -1,0 +1,2821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sikkim &amp; Darjeeling · Nov 2026 — Trip Command Center</title>
+<meta name="theme-color" content="#0F1B2E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<style>
+  :root{
+    --night:#0F1B2E;
+    --night-2:#16233A;
+    --panel:#1B2A41;
+    --panel-2:#20314A;
+    --line: rgba(237,231,216,0.12);
+    --paper:#F1EADA;
+    --ink:#16202F;
+    --cream:#EDE7D8;
+    --cream-dim: rgba(237,231,216,0.65);
+    --marigold:#DFA43B;
+    --marigold-ink:#3A2A08;
+    --prayer-blue:#4C7EA8;
+    --prayer-red:#C1493F;
+    --prayer-green:#5C8A66;
+    --prayer-white:#E8E4D9;
+    --radius-lg: 18px;
+    --radius-sm: 10px;
+  }
+
+  *{ -webkit-tap-highlight-color: transparent; }
+
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--night);
+    color: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif;
+    padding-bottom: 78px;
+  }
+  @media (min-width: 992px){ body{ padding-bottom: 0; } }
+
+  h1,h2,h3,h4, .display-font{
+    font-family: 'Fraunces', Georgia, serif;
+  }
+
+  a{ color: var(--marigold); }
+
+  ::selection{ background: var(--marigold); color: var(--marigold-ink); }
+
+  /* ---------- Tab-based navigation (one screen at a time on phones) ---------- */
+  [data-tab]{ display: none; }
+  [data-tab].tab-visible{ display: block; }
+  .subnav-scroll{ display:flex; gap:.5rem; overflow-x:auto; padding: 0 0 .3rem; margin: 0 0 1.5rem; scrollbar-width:thin; }
+  .subnav-scroll::-webkit-scrollbar{ height:6px; }
+  .subnav-scroll::-webkit-scrollbar-thumb{ background: var(--panel-2); border-radius:6px; }
+  .subnav-chip{
+    flex: 0 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--cream-dim);
+    border-radius: 100px;
+    padding: .38rem .95rem;
+    font-size:.82rem;
+    font-weight:600;
+    white-space:nowrap;
+    text-decoration:none;
+  }
+  .subnav-chip:hover{ background: var(--panel-2); color: var(--cream); }
+  .subnav-chip i{ margin-right:.3rem; color: var(--marigold); }
+
+  /* ---------- Texture backdrop ---------- */
+  .peaks-bg{
+    position: fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(1200px 500px at 15% -5%, rgba(76,126,168,0.20), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(223,164,59,0.10), transparent 55%),
+      linear-gradient(180deg, #0B1424 0%, #0F1B2E 40%, #10192B 100%);
+  }
+  .peaks-bg svg{ position:absolute; bottom:0; left:0; width:100%; opacity:0.5; }
+
+  /* ---------- Navbar ---------- */
+  .navbar-trip{
+    background: rgba(15,27,46,0.86);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .navbar-trip .navbar-brand{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    color: var(--cream);
+    font-size: 1.15rem;
+    letter-spacing: .2px;
+  }
+  .navbar-trip .navbar-brand .flag-dot{
+    display:inline-block; width:9px; height:9px; border-radius:50%;
+    background: var(--marigold); margin-right:8px; position:relative; top:-1px;
+  }
+  .sync-pill{
+    display:inline-flex; align-items:center; gap:.3rem;
+    font-size:.68rem; font-weight:600; color: var(--cream-dim);
+    background: var(--panel); border:1px solid var(--line);
+    border-radius:100px; padding:.2rem .55rem; margin-left:.6rem;
+  }
+  .sync-pill.state-synced{ color:#8fc79b; border-color: rgba(92,138,102,0.4); }
+  .sync-pill.state-syncing{ color: var(--marigold); border-color: rgba(223,164,59,0.4); }
+  .sync-pill.state-error{ color:#e07f76; border-color: rgba(193,73,63,0.4); }
+  @media (max-width: 480px){ .sync-pill{ font-size:.62rem; padding:.15rem .45rem; } }
+  .navbar-trip .nav-link{
+    color: var(--cream-dim) !important;
+    font-size: .92rem;
+    font-weight: 500;
+    padding: .5rem .8rem !important;
+    border-radius: 8px;
+  }
+  .navbar-trip .nav-link.active, .navbar-trip .nav-link:hover{
+    color: var(--night) !important;
+    background: var(--marigold);
+  }
+  .navbar-toggler{ border-color: var(--line); }
+  .navbar-toggler-icon{
+    filter: invert(1) grayscale(1) brightness(1.6);
+  }
+  .offcanvas{
+    background: var(--night-2);
+    color: var(--cream);
+  }
+  .offcanvas .nav-link{ color: var(--cream-dim); padding:.6rem .2rem; }
+  .offcanvas .nav-link.active{ color: var(--marigold); font-weight:600; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 3.2rem 0 2.2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .eyebrow-route{
+    color: var(--cream-dim);
+    font-size: .95rem;
+    display:flex; flex-wrap:wrap; align-items:center; gap:.35rem .5rem;
+  }
+  .hero .eyebrow-route .seg{ white-space:nowrap; }
+  .hero .eyebrow-route i{ color: var(--marigold); font-size:.7rem; }
+  .hero h1{
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.08;
+    font-weight: 600;
+    margin: .5rem 0 .75rem;
+  }
+  .hero h1 em{ font-style: italic; color: var(--marigold); }
+  .hero p.lead{
+    color: var(--cream-dim);
+    font-size: 1.05rem;
+    max-width: 62ch;
+  }
+  .stat-row{ display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.5rem; }
+  .stat-chip{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: .55rem .95rem;
+    display:flex; flex-direction:column; gap:0;
+    min-width: 108px;
+  }
+  .stat-chip .num{ font-family:'Fraunces',serif; font-size:1.35rem; font-weight:600; color:var(--marigold); line-height:1.1;}
+  .stat-chip .lbl{ font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color: var(--cream-dim); }
+
+  .countdown-card{
+    background: linear-gradient(155deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.4rem 1.5rem;
+    height:100%;
+  }
+  .countdown-card .cd-num{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size: 3.2rem;
+    color: var(--marigold);
+    line-height:1;
+  }
+  .countdown-card .cd-lbl{ color: var(--cream-dim); font-size:.85rem; }
+
+  /* ---------- Section shells ---------- */
+  section{ padding: 3.2rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 84px; }
+  .section-head{ margin-bottom: 1.6rem; }
+  .section-head .kicker{
+    color: var(--marigold);
+    font-weight:600;
+    font-size:.85rem;
+    letter-spacing:.03em;
+  }
+  .section-head h2{
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight:600;
+    margin-top:.2rem;
+  }
+  .section-head p{ color: var(--cream-dim); max-width: 68ch; margin-top:.5rem; margin-bottom:0; }
+
+  .card-trip{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    color: var(--cream);
+  }
+  .card-trip .card-body{ padding: 1.4rem; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:.4rem;
+    background: rgba(223,164,59,0.12);
+    color: var(--marigold);
+    border: 1px solid rgba(223,164,59,0.35);
+    border-radius: 100px;
+    padding: .2rem .7rem;
+    font-size: .78rem;
+    font-weight: 600;
+  }
+
+  /* Prayer flag divider */
+  .flag-divider{ display:flex; justify-content:center; gap:8px; margin: 0 auto 1rem; width:fit-content; }
+  .flag-divider span{ width:14px; height:10px; border-radius:1px; display:block; }
+
+  /* ---------- Before-you-go checklists ---------- */
+  .check-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem; }
+  .check-item{
+    display:flex; align-items:flex-start; gap:.65rem;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: .65rem .8rem;
+    transition: background .15s ease, opacity .15s ease;
+  }
+  .check-item input{
+    margin-top: .3rem;
+    width: 1.1em; height: 1.1em;
+    accent-color: var(--marigold);
+    flex-shrink:0;
+  }
+  .check-item label{ font-size:.93rem; line-height:1.4; cursor:pointer; }
+  .check-item.checked{ opacity:.5; }
+  .check-item.checked label{ text-decoration: line-through; }
+
+  .important-item{
+    border-left: 3px solid var(--prayer-red);
+  }
+  .important-item.checked{ border-left-color: var(--prayer-green); }
+
+  .progress-mini{ height:6px; background: var(--night-2); border-radius: 10px; overflow:hidden; }
+  .progress-mini .bar{ height:100%; background: var(--marigold); transition: width .25s ease; }
+
+  /* ---------- Timeline (border crossing) ---------- */
+  .cross-timeline{ position:relative; padding-left: 1.7rem; }
+  .cross-timeline::before{
+    content:''; position:absolute; left:.4rem; top:.3rem; bottom:.3rem; width:2px;
+    background: repeating-linear-gradient(180deg, var(--line) 0 6px, transparent 6px 12px);
+  }
+  .cross-step{ position:relative; padding-bottom: 1.35rem; }
+  .cross-step:last-child{ padding-bottom:0; }
+  .cross-step::before{
+    content:''; position:absolute; left:-1.7rem; top:.25rem; width:10px; height:10px; border-radius:50%;
+    background: var(--marigold); box-shadow: 0 0 0 4px rgba(223,164,59,0.15);
+  }
+  .cross-step .t{ font-family:'Fraunces',serif; color: var(--marigold); font-weight:600; font-size:.92rem; }
+  .cross-step .d{ color: var(--cream-dim); font-size:.92rem; margin-top:.15rem; }
+
+  /* ---------- Day single-panel view ---------- */
+  .day-nav-scroll{
+    display:flex; gap:.5rem; overflow-x:auto; padding: .6rem 0; margin-bottom:1.4rem; scrollbar-width:thin;
+    position: sticky; top: 58px; z-index: 20;
+    background: var(--night);
+    border-bottom: 1px solid var(--line);
+  }
+  .day-nav-scroll::-webkit-scrollbar{ height:6px; }
+  .day-nav-scroll::-webkit-scrollbar-thumb{ background: var(--panel-2); border-radius:6px; }
+  .day-jump{
+    flex: 0 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--cream-dim);
+    border-radius: 100px;
+    padding: .38rem .95rem;
+    font-size:.82rem;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .day-jump:hover, .day-jump.active{ background: var(--marigold); color: var(--night); border-color: var(--marigold); }
+
+  .day-panel{
+    display:none;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow:hidden;
+  }
+  .day-panel.panel-visible{ display:block; }
+  .day-panel-header{
+    background: var(--panel-2);
+    color: var(--marigold);
+    display:flex; align-items:center;
+    padding: 1.05rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .day-panel-header .day-title-wrap > span:first-child{
+    font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color: var(--cream);
+  }
+  .day-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width: 2.5rem; height:2.5rem; border-radius:50%;
+    background: var(--night-2); color: var(--marigold);
+    font-family:'Fraunces',serif; font-weight:700; font-size:1rem;
+    margin-right: .9rem; flex-shrink:0;
+  }
+  .day-title-wrap{ display:flex; flex-direction:column; text-align:left; }
+  .day-title-wrap .dsub{ font-family:'Inter'; font-weight:500; font-size:.78rem; color: var(--cream-dim); text-transform:none; }
+  .day-panel-body{ padding: 1.25rem; }
+
+  .day-timeline{ position:relative; padding-left:1.5rem; margin-bottom: 1.3rem; }
+  .day-timeline::before{
+    content:''; position:absolute; left:.35rem; top:.2rem; bottom:.2rem; width:2px; background: var(--line);
+  }
+  .day-timeline .step{ position:relative; padding-bottom: 1rem; }
+  .day-timeline .step:last-child{ padding-bottom:0; }
+  .day-timeline .step::before{
+    content:''; position:absolute; left:-1.5rem; top:.28rem; width:9px; height:9px; border-radius:50%; background: var(--prayer-blue);
+  }
+  .day-timeline .step .tm{ font-weight:700; color: var(--marigold); font-size:.83rem; }
+  .day-timeline .step .tx{ font-size:.92rem; color: var(--cream); line-height:1.5; }
+  .actual-time-wrap{ flex:0 0 auto; display:flex; gap:.55rem; align-items:flex-end; }
+  .actual-time-group{ display:flex; flex-direction:column; gap:.2rem; }
+  .actual-time-group .atg-label{
+    font-size:.62rem; text-transform:uppercase; letter-spacing:.05em; color: var(--cream-dim); font-weight:600;
+  }
+  .actual-time-input{
+    width: 116px; padding:.22rem .5rem; font-size:.8rem;
+    color-scheme: dark; /* keeps the native clock icon visible on a dark field */
+  }
+  @media (max-width: 480px){ .actual-time-input{ width: 102px; padding:.22rem .35rem; font-size:.75rem; } }
+  .tz-select{
+    width: 92px; padding:.22rem .4rem; font-size:.75rem;
+  }
+  .tz-badge{
+    font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    padding:.1rem .4rem; border-radius:100px;
+    background: rgba(76,126,168,0.18); color:#8db9df; border:1px solid rgba(76,126,168,0.35);
+  }
+  .tz-badge.bdt{ background: rgba(92,138,102,0.18); color:#8fc79b; border-color: rgba(92,138,102,0.35); }
+  .pc-time-row{ display:flex; align-items:center; gap:.45rem; flex-wrap:wrap; margin-bottom:.35rem; }
+
+  .notes-box{
+    background: var(--night-2);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-sm);
+    padding: .9rem;
+  }
+  .notes-box label{
+    font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; color: var(--cream-dim); font-weight:600;
+    display:flex; align-items:center; gap:.4rem; margin-bottom:.5rem;
+  }
+  .notes-box textarea{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--cream);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    min-height: 70px;
+    font-size:.9rem;
+  }
+  .notes-box textarea:focus{
+    background: var(--panel);
+    color: var(--cream);
+    border-color: var(--marigold);
+    box-shadow: 0 0 0 .2rem rgba(223,164,59,0.15);
+  }
+  .save-hint{ font-size:.72rem; color: var(--cream-dim); margin-top:.35rem; display:flex; align-items:center; gap:.3rem; opacity:0; transition:opacity .3s ease; }
+  .save-hint.show{ opacity:1; }
+
+  /* ---------- Tables ---------- */
+  .table-trip{
+    --bs-table-color: var(--cream);
+    --bs-table-bg: transparent;
+    --bs-table-striped-color: var(--cream);
+    --bs-table-striped-bg: rgba(237,231,216,0.04);
+    --bs-table-active-color: var(--cream);
+    --bs-table-active-bg: rgba(223,164,59,0.08);
+    --bs-table-hover-color: var(--cream);
+    --bs-table-hover-bg: rgba(223,164,59,0.07);
+    color: var(--cream);
+    margin-bottom:0;
+  }
+  .table-trip thead th{
+    color: var(--marigold) !important;
+    font-family:'Fraunces',serif; font-weight:600;
+    border-bottom: 1px solid var(--line);
+    font-size:.85rem;
+    white-space:nowrap;
+  }
+  .table-trip td, .table-trip th{
+    color: var(--cream);
+    border-color: var(--line);
+    vertical-align: top;
+    padding: .7rem .6rem;
+    font-size:.88rem;
+  }
+  .table-trip tbody td{ color: var(--cream-dim); }
+  .table-trip tbody td:first-child{ color: var(--cream); }
+  .table-trip tbody tr:hover td{ color: var(--cream); }
+  .table-responsive-trip{ border-radius: var(--radius-sm); overflow:hidden; border: 1px solid var(--line); }
+
+  /* ---------- Stay cards ---------- */
+  .stay-card{ height:100%; }
+  .stay-card .price{ color: var(--marigold); font-weight:700; font-family:'Fraunces',serif; }
+
+  /* ---------- Budget / Expense Tracker ---------- */
+  .budget-ref-toggle{ cursor:pointer; }
+  .expense-form .form-control, .expense-form .form-select{
+    background: var(--night-2);
+    border: 1px solid var(--line);
+    color: var(--cream);
+  }
+  .expense-form .form-control:focus, .expense-form .form-select:focus{
+    background: var(--night-2);
+    color: var(--cream);
+    border-color: var(--marigold);
+    box-shadow: 0 0 0 .2rem rgba(223,164,59,0.15);
+  }
+  .expense-form .form-control::placeholder{ color: rgba(237,231,216,0.4); }
+  .btn-marigold{
+    background: var(--marigold); border-color: var(--marigold); color: var(--marigold-ink); font-weight:700;
+  }
+  .btn-marigold:hover{ background:#c98f2b; border-color:#c98f2b; color: var(--marigold-ink); }
+  .btn-outline-trip{
+    border-color: var(--line); color: var(--cream-dim);
+  }
+  .btn-outline-trip:hover{ background: var(--panel-2); color: var(--cream); border-color: var(--line); }
+
+  .total-tile{
+    background: linear-gradient(155deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.3rem;
+    text-align:center;
+  }
+  .total-tile .amt{ font-family:'Fraunces',serif; font-weight:700; font-size:1.7rem; color: var(--marigold); }
+  .total-tile .lbl{ color: var(--cream-dim); font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; }
+
+  .expense-row-del{ color: var(--prayer-red); cursor:pointer; background:none; border:none; font-size:1rem; }
+  .expense-row-del:hover{ color:#e06a5f; }
+
+  .cat-tag{
+    font-size:.72rem; font-weight:600; padding:.15rem .55rem; border-radius:100px;
+    background: rgba(76,126,168,0.18); color:#8db9df; border:1px solid rgba(76,126,168,0.35);
+  }
+
+  .empty-state{ text-align:center; padding: 2rem 1rem; color: var(--cream-dim); }
+  .empty-state i{ font-size:1.8rem; color: var(--marigold); opacity:.7; }
+
+  /* ---------- Footer / bottom nav (mobile) ---------- */
+  .bottom-nav{
+    position: fixed; left:0; right:0; bottom:0; z-index:1030;
+    background: rgba(15,27,46,0.94);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    display:flex; justify-content:space-around;
+    padding: .4rem .1rem calc(.4rem + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 992px){ .bottom-nav{ display:none; } }
+  .bottom-nav a{
+    color: var(--cream-dim); text-decoration:none; text-align:center; font-size:.52rem;
+    display:flex; flex-direction:column; align-items:center; gap:.1rem; flex:1;
+    padding:.15rem 0;
+    min-width:0;
+    white-space:nowrap;
+  }
+  .bottom-nav a.active, .bottom-nav a:hover{ color: var(--marigold); }
+  .bottom-nav i{ font-size:1rem; }
+
+  footer.site-footer{ padding: 2.2rem 0 2.6rem; text-align:center; color: var(--cream-dim); font-size:.85rem; }
+  footer.site-footer .flag-divider{ margin-bottom:1rem; }
+
+  .btn-icon-sm{
+    width: 34px; height:34px; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:50%; background: var(--panel-2); border:1px solid var(--line); color: var(--cream-dim);
+  }
+  .btn-icon-sm:hover{ color: var(--marigold); border-color: var(--marigold); }
+
+  .converter-box{
+    background: var(--night-2); border:1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 1rem;
+  }
+  .dark-input, .dark-input.form-control{
+    background: var(--panel) !important;
+    border: 1px solid var(--line) !important;
+    color: var(--cream) !important;
+  }
+  .dark-input::placeholder{ color: rgba(237,231,216,0.4); }
+  .dark-input:focus{
+    background: var(--panel) !important;
+    color: var(--cream) !important;
+    border-color: var(--marigold) !important;
+    box-shadow: 0 0 0 .2rem rgba(223,164,59,0.15);
+  }
+
+  /* ---------- Optional plan-change box (per day) ---------- */
+  .optional-plan-box{ margin-top: 1rem; }
+  .optional-toggle{ display:inline-flex; align-items:center; gap:.45rem; }
+  .badge-optional{
+    font-size:.65rem; text-transform:uppercase; letter-spacing:.04em; font-weight:700;
+    background: rgba(76,126,168,0.18); color:#8db9df; border:1px solid rgba(76,126,168,0.35);
+    border-radius:100px; padding:.1rem .5rem;
+  }
+  .optional-content{
+    background: var(--night-2);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-sm);
+    padding: .8rem;
+  }
+  .plan-change-list{ display:flex; flex-direction:column; gap:.4rem; }
+  .plan-change-list li{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:.5rem;
+    background: var(--panel); border:1px solid var(--line); border-radius: var(--radius-sm);
+    padding: .5rem .65rem; font-size:.85rem; color: var(--cream);
+  }
+  .plan-change-list .pc-del{ background:none; border:none; color: var(--prayer-red); flex-shrink:0; }
+  .plan-change-list .pc-del:hover{ color:#e06a5f; }
+
+  /* ---------- Shopping checklist ---------- */
+  .shop-item-row{
+    display:flex; align-items:center; gap:.65rem;
+    background: var(--panel-2); border:1px solid var(--line); border-radius: var(--radius-sm);
+    padding: .55rem .8rem; margin-bottom:.5rem; flex-wrap:wrap;
+  }
+  .shop-item-row.bought{ opacity:.7; }
+  .shop-item-row .shop-name{ flex: 1 1 160px; font-size:.92rem; }
+  .shop-item-row.bought .shop-name{ text-decoration: line-through; color: var(--cream-dim); }
+  .shop-item-row input[type=checkbox]{ width:1.1em; height:1.1em; accent-color: var(--marigold); flex-shrink:0; }
+  .shop-price-input{ width: 100px; }
+  .shop-currency-select{ width: 84px; }
+
+  @media (max-width: 767px){
+    section{ padding: 2.3rem 0; scroll-margin-top: 68px; }
+    .day-panel-header{ font-size:.95rem; padding: .9rem 1rem; }
+    .day-badge{ width:2.15rem; height:2.15rem; font-size:.85rem; margin-right:.65rem; }
+  }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background: var(--night); }
+  ::-webkit-scrollbar-thumb{ background: var(--panel-2); border-radius:6px; }
+</style>
+</head>
+<body>
+
+<div class="peaks-bg">
+  <svg viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="0,220 0,140 120,60 240,150 360,40 480,130 620,20 760,120 900,55 1040,140 1180,70 1320,150 1440,90 1440,220" fill="#152136"/>
+  </svg>
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-trip fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#" data-tab-link="trip"><span class="flag-dot"></span>Sikkim &amp; Darjeeling</a>
+    <span class="sync-pill d-none" id="syncStatusPill"><i class="bi bi-cloud"></i> <span id="syncStatusText">—</span></span>
+    <button class="navbar-toggler" type="button" id="navTogglerBtn" aria-controls="navOffcanvas" aria-label="Open menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse d-none d-lg-flex">
+      <ul class="navbar-nav ms-auto flex-nowrap align-items-lg-center" id="navLinksDesktop">
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i> Overview</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="days"><i class="bi bi-calendar3"></i> Day-by-Day</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places &amp; Food</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i> Budget</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="requests"><i class="bi bi-people"></i> Requests</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Checklists</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Offcanvas for mobile -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="navOffcanvas">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title display-font">Menu</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav flex-column gap-1" id="navLinksMobile">
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="trip" href="#"><i class="bi bi-signpost-split"></i> Overview — trip info, prep &amp; tips</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="days" href="#"><i class="bi bi-calendar3"></i> Day-by-Day Plan</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="guide" href="#"><i class="bi bi-compass"></i> Places &amp; Food — stay, viewpoints, meals</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="budget" href="#"><i class="bi bi-pie-chart"></i> Budget Summary</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="shopping" href="#"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="requests" href="#"><i class="bi bi-people"></i> Requests — bring from India</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="lists" href="#"><i class="bi bi-check2-square"></i> Checklists — packing &amp; permits</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="home" data-tab="trip" style="padding-top:6.5rem;">
+  <div class="container">
+    <div class="subnav-scroll">
+      <a class="subnav-chip" href="#home"><i class="bi bi-signpost-split"></i>Overview</a>
+      <a class="subnav-chip" href="#before"><i class="bi bi-clipboard-check"></i>Before You Go</a>
+      <a class="subnav-chip" href="#crossing"><i class="bi bi-signpost-2"></i>Border Crossing</a>
+      <a class="subnav-chip" href="#tips"><i class="bi bi-lightbulb"></i>Quick Tips</a>
+    </div>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="eyebrow-route">
+          <span class="seg">Dhaka</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Changrabandha</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Siliguri</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Gangtok</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Tsomgo &amp; North Sikkim</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Darjeeling</span><i class="bi bi-caret-right-fill"></i>
+          <span class="seg">Dhaka</span>
+        </div>
+        <h1>Eleven days in the <em>clouds</em>, on a solo budget.</h1>
+        <p class="lead">Your fine-tuned v3 plan for Sikkim &amp; Darjeeling — every pickup point, permit rule, rupee and packing note in one place, with room for your own notes and receipts as you go.</p>
+        <div class="stat-row">
+          <div class="stat-chip"><span class="num" id="heroDepartDate" data-date-for-day="1" data-format="short">13 Nov</span><span class="lbl">Depart Dhaka</span></div>
+          <div class="stat-chip"><span class="num" id="heroReturnDate" data-date-for-day="11" data-format="short">23 Nov</span><span class="lbl">Back in Dhaka</span></div>
+          <div class="stat-chip"><span class="num">11 / 9</span><span class="lbl">Days / Nights</span></div>
+          <div class="stat-chip"><span class="num">Solo</span><span class="lbl">Traveller</span></div>
+        </div>
+
+        <div class="card card-trip mt-3" style="max-width:520px;">
+          <div class="card-body py-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);"><i class="bi bi-calendar-event" style="color:var(--marigold);"></i> Trip delayed? Shift the whole plan</label>
+            <div class="input-group input-group-sm">
+              <input type="date" class="form-control dark-input" id="tripStartDateInput">
+              <button class="btn btn-marigold" id="updateStartDateBtn" type="button"><i class="bi bi-arrow-repeat"></i> Update dates</button>
+            </div>
+            <div class="small mt-2" style="color:var(--cream-dim);">Currently planned from <strong id="currentStartLabel" style="color:var(--marigold);">Fri, 13 Nov 2026</strong>. Change this if your departure gets pushed back — every day's date below shifts to match automatically. Your notes, checklists and times stay exactly where they are.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="countdown-card">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="cd-lbl mb-1">Time until your coach leaves Gabtoli</div>
+              <div class="cd-num" id="countdownNum">--</div>
+              <div class="cd-lbl" id="countdownUnit">days to go</div>
+            </div>
+            <div class="pill"><i class="bi bi-snow2"></i> ~8–18°C day</div>
+          </div>
+          <hr style="border-color: var(--line);">
+          <div class="row g-2 text-center">
+            <div class="col-4">
+              <div class="fw-semibold" style="color:var(--marigold)">Yumthang</div>
+              <div class="small" style="color:var(--cream-dim)">below 0°C dawn</div>
+            </div>
+            <div class="col-4">
+              <div class="fw-semibold" style="color:var(--marigold)">Tsomgo</div>
+              <div class="small" style="color:var(--cream-dim)">12,300 ft</div>
+            </div>
+            <div class="col-4">
+              <div class="fw-semibold" style="color:var(--marigold)">Tiger Hill</div>
+              <div class="small" style="color:var(--cream-dim)">3:30 AM start</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= WHAT CHANGED + PERMIT REALITY ================= -->
+<section id="before" class="pt-5" data-tab="trip">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Before You Leave</div>
+      <h2>Read this part twice</h2>
+      <p>What changed since v2, and the permit rules that decide whether Zero Point and North Sikkim even happen for you.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card card-trip h-100">
+          <div class="card-body">
+            <span class="pill mb-2"><i class="bi bi-arrow-repeat"></i> What changed from v2</span>
+            <ul class="mt-2 mb-0" style="color:var(--cream-dim); font-size:.92rem; line-height:1.7; padding-left:1.1rem;">
+              <li>Departure moved to the night of <strong style="color:var(--cream)"><span data-date-for-day="1" data-format="withYear">13 Nov 2026</span></strong> — absorbs the old 1-day overflow.</li>
+              <li>The extra day you offered went to <strong style="color:var(--cream)">Darjeeling's 3rd night</strong> — toy train, viewpoints and tea estate now spread across two relaxed days.</li>
+              <li>Visa steps removed — yours is already issued for <strong style="color:var(--cream)">Burimari–Changrabandha</strong>, not Banglabandha.</li>
+              <li>Every day now has clock times and named pickup/drop-off points.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card card-trip h-100" style="border-color: rgba(193,73,63,0.4);">
+          <div class="card-body">
+            <span class="pill" style="background:rgba(193,73,63,0.14); color:#e07f76; border-color:rgba(193,73,63,0.4);"><i class="bi bi-exclamation-triangle"></i> Sikkim permit reality check</span>
+            <ul class="mt-2 mb-0" style="color:var(--cream-dim); font-size:.92rem; line-height:1.7; padding-left:1.1rem;">
+              <li>RAP/PAP need prior <strong style="color:var(--cream)">Ministry of Home Affairs</strong> clearance for Bangladeshi nationals — arranged via your registered Sikkim agent, not at the border.</li>
+              <li>The SNT Complex stop in Siliguri is your <strong style="color:var(--cream)">verification/backup</strong> step only — start clearance with your agent well before 13 Nov.</li>
+              <li>Solo foreigners must travel in a <strong style="color:var(--cream)">group of 2+</strong> in permit zones — a shared group tour seat satisfies this.</li>
+              <li><strong style="color:var(--cream)">Zero Point</strong> is usually off-limits to foreign nationals — get written confirmation before paying.</li>
+              <li><strong style="color:var(--cream)">Nathu La, Baba Mandir, Gurudongmar Lake</strong> are closed to all foreign nationals and are not part of this plan.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card card-trip h-100">
+          <div class="card-body">
+            <i class="bi bi-file-earmark-text" style="color:var(--marigold); font-size:1.3rem;"></i>
+            <h3 class="h6 mt-2 mb-1 display-font">Documents to carry</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Originals + 2–3 photocopies of each — passport &amp; visa, 6–8 photos, hotel confirmations, bus tickets, NID copy, and your agent's written RAP/PAP status.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-trip h-100">
+          <div class="card-body">
+            <i class="bi bi-cash-coin" style="color:var(--marigold); font-size:1.3rem;"></i>
+            <h3 class="h6 mt-2 mb-1 display-font">Money</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Small BDT→INR (or a little USD) for the first hours; withdraw the bulk from a Siliguri ATM; keep Rs.100/500 notes for jeeps and small shops.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-trip h-100">
+          <div class="card-body">
+            <i class="bi bi-backpack2" style="color:var(--marigold); font-size:1.3rem;"></i>
+            <h3 class="h6 mt-2 mb-1 display-font">Packing</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Heavy jacket, thermals, gloves, wool cap; sturdy shoes for Tiger Hill; power bank, rain jacket, padlock, medication &amp; altitude tablets.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BORDER CROSSING ================= -->
+<section id="crossing" data-tab="trip">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 2</div>
+      <h2>Dhaka → Siliguri, timed</h2>
+      <p>Burimari–Changrabandha crossing, Friday night into Saturday morning.</p>
+    </div>
+    <div class="card card-trip">
+      <div class="card-body">
+        <div class="cross-timeline">
+          <div class="cross-step"><div class="t">~8:00–8:30 PM · <span data-date-for-day="1">Fri 13 Nov</span></div><div class="d">Board your AC coach at the Dhaka counter (Gabtoli/Kalyanpur). Confirm the service crosses at Burimari, matching your visa.</div></div>
+          <div class="cross-step"><div class="t">~9:00 PM – 5:30 AM</div><div class="d">Overnight journey north through the Rangpur route towards Burimari, Lalmonirhat. Try to sleep.</div></div>
+          <div class="cross-step"><div class="t">~6:00–7:00 AM · <span data-date-for-day="2">Sat 14 Nov</span></div><div class="d">Arrive Burimari land port. Breakfast at a stall near the terminal before immigration opens.</div></div>
+          <div class="cross-step"><div class="t">~7:00–8:00 AM</div><div class="d">Bangladesh customs &amp; emigration at Burimari — passport stamped out. Keep your bag accessible for a check.</div></div>
+          <div class="cross-step"><div class="t">~8:00–8:15 AM</div><div class="d">Short walk across the zero point to the Indian side at Changrabandha, Cooch Behar district.</div></div>
+          <div class="cross-step"><div class="t">~8:15–9:00 AM</div><div class="d">Indian immigration &amp; customs at Changrabandha — passport and visa stamped in. Sikkim permit is checked separately, later, at Rangpo.</div></div>
+          <div class="cross-step"><div class="t">~9:00–9:30 AM</div><div class="d">Onward local transport (shared bus/jeep) towards Siliguri — board near the Changrabandha bus stand.</div></div>
+          <div class="cross-step"><div class="t">~9:30 AM–12:00 PM</div><div class="d">Road journey Changrabandha → Siliguri (~90–100 km via Mainaguri/Jalpaiguri, ~2.5–3 hrs).</div></div>
+          <div class="cross-step"><div class="t">~12:00–12:30 PM</div><div class="d">Arrive Siliguri — drop near Tenzing Norgay Bus Terminus / SNT Complex, Hill Cart Road, Pradhan Nagar.</div></div>
+        </div>
+        <div class="mt-3 p-3" style="background:var(--night-2); border-radius:var(--radius-sm); border:1px solid var(--line);">
+          <i class="bi bi-info-circle" style="color:var(--marigold);"></i>
+          <span class="small" style="color:var(--cream-dim);"> Some operators sell a single through-ticket that carries you all the way to Siliguri — you may not need to arrange the Changrabandha–Siliguri leg yourself. Confirm this when you book.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DAY BY DAY ================= -->
+<section id="itinerary" data-tab="days">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 3</div>
+      <h2>Day-by-day itinerary</h2>
+      <p>Pick a day below — only that day's plan shows, so you're never scrolling past ten other days to find it. The day picker stays put near the top as you scroll.</p>
+    </div>
+
+    <div class="day-nav-scroll" id="dayJumpRow"></div>
+
+    <div id="dayPanels"></div>
+  </div>
+</section>
+
+<!-- ================= STAY ================= -->
+<section id="stay" data-tab="guide">
+  <div class="container">
+    <div class="subnav-scroll">
+      <a class="subnav-chip" href="#stay"><i class="bi bi-house-door"></i>Where to Stay</a>
+      <a class="subnav-chip" href="#viewpoints"><i class="bi bi-binoculars"></i>Viewpoints</a>
+      <a class="subnav-chip" href="#food"><i class="bi bi-cup-hot"></i>Food</a>
+    </div>
+    <div class="section-head">
+      <div class="kicker">Section 4</div>
+      <h2>Where to stay</h2>
+      <p>Budget picks along the route, in Indian Rupees per night.</p>
+    </div>
+    <div class="row g-3" id="stayRow"></div>
+  </div>
+</section>
+
+<!-- ================= VIEWPOINTS ================= -->
+<section id="viewpoints" data-tab="guide">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 5</div>
+      <h2>Viewpoints — distance, pickup &amp; cost</h2>
+    </div>
+    <div class="table-responsive table-responsive-trip">
+      <table class="table table-trip mb-0">
+        <thead><tr><th>Viewpoint</th><th>Distance</th><th>Pickup / Drop</th><th>Cost</th></tr></thead>
+        <tbody id="viewpointsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOD ================= -->
+<section id="food" data-tab="guide">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 6</div>
+      <h2>Food to try</h2>
+      <p>A simple local meal runs roughly Rs. 80–180; a full sit-down restaurant meal Rs. 200–400.</p>
+    </div>
+    <div class="row g-3" id="foodRow"></div>
+
+    <div class="card card-trip mt-4">
+      <div class="card-body">
+        <h3 class="h6 display-font mb-1"><i class="bi bi-journal-text" style="color:var(--marigold);"></i> What did you actually eat?</h3>
+        <p class="small mb-3" style="color:var(--cream-dim);">Log meals by day, in BDT or INR — these count straight into your Budget totals below, so you never have to add them up twice.</p>
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Day</label>
+            <select class="form-select form-select-sm dark-input" id="foodDaySelect"></select>
+          </div>
+          <div class="col-6 col-md-4">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Meal / item</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="foodMealInput" placeholder="e.g. Momos at MG Marg">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Price</label>
+            <input type="number" min="0" step="any" class="form-control form-control-sm dark-input" id="foodPriceInput" placeholder="0">
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Currency</label>
+            <select class="form-select form-select-sm dark-input" id="foodCurrencySelect">
+              <option value="INR">₹ INR</option>
+              <option value="BDT">৳ BDT</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2">
+            <button class="btn btn-marigold btn-sm w-100" id="foodAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add</button>
+          </div>
+        </div>
+        <div class="table-responsive table-responsive-trip">
+          <table class="table table-trip mb-0">
+            <thead><tr><th>Day</th><th>Meal / item</th><th class="text-end">Price</th><th></th></tr></thead>
+            <tbody id="foodLogBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state d-none" id="foodLogEmpty">
+          <i class="bi bi-egg-fried d-block mb-2"></i>
+          No meals logged yet — add the first one above.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BUDGET & EXPENSE TRACKER ================= -->
+<section id="budget" data-tab="budget">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 7</div>
+      <h2>Budget summary</h2>
+      <p>Your spending at a glance — pulled together automatically from every expense, meal and shopping item you log. To add or edit an expense, go to the Shopping &amp; Expenses tab.</p>
+    </div>
+
+    <div class="row g-3 mb-4" id="totalsRow">
+      <div class="col-6 col-lg-3">
+        <div class="total-tile"><div class="amt" id="totalBDT">৳0</div><div class="lbl">Spent — BDT side</div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="total-tile"><div class="amt" id="totalINR">₹0</div><div class="lbl">Spent — INR side</div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="total-tile"><div class="amt" id="totalEntries">0</div><div class="lbl">Logged entries</div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="total-tile"><div class="amt" id="combinedBDT">৳0</div><div class="lbl">Combined, in BDT</div></div>
+      </div>
+    </div>
+
+    <div class="card card-trip mb-4">
+      <div class="card-body">
+        <h3 class="h6 display-font mb-1"><i class="bi bi-pie-chart" style="color:var(--marigold);"></i> Everything, by category</h3>
+        <p class="small mb-3" style="color:var(--cream-dim);">Pulls together your logged expenses, food log and shopping list purchases in one place — travel, stay, food and shopping, all categorized, so you don't have to add it up from different sections yourself.</p>
+        <div class="table-responsive table-responsive-trip">
+          <table class="table table-trip mb-0">
+            <thead><tr><th>Category</th><th class="text-end">INR spent</th><th class="text-end">BDT spent</th></tr></thead>
+            <tbody id="categoryBreakdownBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-trip">
+      <div class="card-body">
+        <button class="btn btn-sm btn-outline-trip w-100 text-start budget-ref-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#budgetRef">
+          <i class="bi bi-clipboard-data"></i> Show the planned budget reference (Section 7 of your plan) <i class="bi bi-chevron-down float-end"></i>
+        </button>
+        <div class="collapse mt-3" id="budgetRef">
+          <p class="small" style="color:var(--cream-dim);">Bangladesh-side costs in BDT; everything from the India crossing onward in INR. Approximate, for one solo budget traveller — visa cost excluded, already sorted.</p>
+          <h4 class="h6 mt-3" style="color:var(--marigold);">Bangladesh side (BDT)</h4>
+          <div class="table-responsive table-responsive-trip mb-3">
+            <table class="table table-trip mb-0"><thead><tr><th>Item</th><th>Approx. Cost</th><th>Notes</th></tr></thead><tbody id="budgetBdBody"></tbody></table>
+          </div>
+          <h4 class="h6" style="color:var(--marigold);">India side (INR)</h4>
+          <div class="table-responsive table-responsive-trip">
+            <table class="table table-trip mb-0"><thead><tr><th>Item</th><th>Approx. Cost (INR)</th><th>Notes</th></tr></thead><tbody id="budgetInBody"></tbody></table>
+          </div>
+          <div class="mt-3 p-3" style="background:var(--night-2); border-radius:var(--radius-sm); border:1px solid var(--line);">
+            <span class="small" style="color:var(--cream-dim);">Estimated India-side total (excluding shopping): roughly <strong style="color:var(--cream)">Rs. 19,000 – 27,000</strong>. Add <strong style="color:var(--cream)">BDT ~2,100–2,700</strong> for the Bangladesh-side bus/local transport, plus your own shopping budget.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SHOPPING & EXPENSES ================= -->
+<section id="shopping" data-tab="shopping">
+  <div class="container">
+    <div class="subnav-scroll">
+      <a class="subnav-chip" href="#logExpense"><i class="bi bi-plus-circle"></i>Log an Expense</a>
+      <a class="subnav-chip" href="#shoppingGuide"><i class="bi bi-signpost"></i>Shopping Guide</a>
+      <a class="subnav-chip" href="#shoppingList"><i class="bi bi-cart-check"></i>Your Shopping List</a>
+    </div>
+    <div class="section-head" id="logExpense">
+      <div class="kicker">Section 8 · Live tool</div>
+      <h2>Shopping &amp; expenses</h2>
+      <p>Log everything you spend here — in BDT or INR — and shop for souvenirs and gifts. Everything feeds straight into the Budget summary tab.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-lg-4">
+        <div class="card card-trip mb-3">
+          <div class="card-body">
+            <h3 class="h6 display-font mb-3"><i class="bi bi-plus-circle" style="color:var(--marigold);"></i> Add an expense</h3>
+            <form class="expense-form" id="expenseForm">
+              <div class="mb-2">
+                <label class="form-label small" style="color:var(--cream-dim);">What for</label>
+                <input type="text" class="form-control" id="expDesc" placeholder="e.g. Shared jeep to Gangtok" required>
+              </div>
+              <div class="row g-2 mb-2">
+                <div class="col-6">
+                  <label class="form-label small" style="color:var(--cream-dim);">Amount</label>
+                  <input type="number" step="any" min="0" class="form-control" id="expAmount" placeholder="0" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small" style="color:var(--cream-dim);">Currency</label>
+                  <select class="form-select" id="expCurrency">
+                    <option value="INR">INR ₹</option>
+                    <option value="BDT">BDT ৳</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label small" style="color:var(--cream-dim);">Category</label>
+                <select class="form-select" id="expCategory">
+                  <option>Transport</option>
+                  <option>Stay</option>
+                  <option>Food</option>
+                  <option>Permits &amp; Tours</option>
+                  <option>Shopping</option>
+                  <option>SIM / Misc</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small" style="color:var(--cream-dim);">Day</label>
+                <select class="form-select" id="expDay"></select>
+              </div>
+              <button type="submit" class="btn btn-marigold w-100"><i class="bi bi-check2"></i> Add expense</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="converter-box">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-arrow-left-right" style="color:var(--marigold);"></i>
+            <span class="small fw-semibold">Quick BDT ⇄ INR rate</span>
+          </div>
+          <div class="input-group input-group-sm">
+            <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">1 BDT =</span>
+            <input type="number" step="0.001" class="form-control dark-input" id="fxRate" placeholder="e.g. 0.72">
+            <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">INR</span>
+          </div>
+          <div class="small mt-2" style="color:var(--cream-dim);">Set today's rate to see a single combined total on the Budget tab. Rates change — check before you rely on it.</div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="card card-trip">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+              <h3 class="h6 display-font mb-0"><i class="bi bi-receipt" style="color:var(--marigold);"></i> Your expenses</h3>
+              <button class="btn btn-sm btn-outline-trip" id="clearExpensesBtn"><i class="bi bi-trash3"></i> Clear all</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-trip align-middle">
+                <thead><tr><th>Description</th><th>Category</th><th>Day</th><th class="text-end">Amount</th><th></th></tr></thead>
+                <tbody id="expenseTableBody"></tbody>
+              </table>
+            </div>
+            <div class="empty-state d-none" id="expenseEmpty">
+              <i class="bi bi-wallet2 d-block mb-2"></i>
+              No expenses logged yet — add your first one on the left.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head" id="shoppingGuide">
+      <div class="kicker">Reference</div>
+      <h2>Shopping guide</h2>
+      <p>Buy small/light souvenirs as you pass through Gangtok and Darjeeling; save bulk shopping — chocolate, cosmetics, shoes — for Day 10 in Siliguri, right before your return bus.</p>
+    </div>
+    <div class="table-responsive table-responsive-trip">
+      <table class="table table-trip mb-0">
+        <thead><tr><th>Item</th><th>Best place to buy</th><th>Why</th></tr></thead>
+        <tbody id="shoppingBody"></tbody>
+      </table>
+    </div>
+    <div class="mt-3 p-3" style="background:var(--panel); border-radius:var(--radius-sm); border:1px solid var(--line);">
+      <i class="bi bi-tag" style="color:var(--marigold);"></i>
+      <span class="small" style="color:var(--cream-dim);"> At Hong Kong Market, bargain hard — offering roughly half the vendor's first quote is a normal opening move. Keep receipts for higher-value items in case of a customs question at the Bangladesh border.</span>
+    </div>
+
+    <div class="card card-trip mt-4" id="shoppingList">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <div>
+            <h3 class="h6 display-font mb-1"><i class="bi bi-cart-check" style="color:var(--marigold);"></i> Your shopping list</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Add what you plan to buy first. Tick it off and fill in the price once you've actually paid — running totals update as you go.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-trip" id="clearShopBtn"><i class="bi bi-trash3"></i> Clear all</button>
+        </div>
+
+        <div class="input-group input-group-sm mb-3" style="max-width:520px;">
+          <input type="text" class="form-control dark-input" id="shopItemInput" placeholder="e.g. Woollen shawl for Ma">
+          <button class="btn btn-marigold" id="shopItemAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add to list</button>
+        </div>
+
+        <div id="shopListWrap"></div>
+        <div class="empty-state d-none" id="shopEmpty">
+          <i class="bi bi-bag d-block mb-2"></i>
+          Nothing on your shopping list yet — add the first thing you want to pick up.
+        </div>
+
+        <div class="row g-2 mt-1">
+          <div class="col-6 col-md-3">
+            <div class="total-tile"><div class="amt" id="shopTotalINR">₹0</div><div class="lbl">Paid so far — INR</div></div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="total-tile"><div class="amt" id="shopTotalBDT">৳0</div><div class="lbl">Paid so far — BDT</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REQUESTS ================= -->
+<section id="requests" data-tab="requests">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Requests</div>
+      <h2>Requests: bring this from India</h2>
+      <p>For when someone asks "can you bring this back for me?" — log the item and who asked, even before you know the price. Fill in the price once you find it, tick it as bought, and it's added straight into your Shopping &amp; Expenses list and totals — untick to pull it back out.</p>
+    </div>
+
+    <div class="card card-trip">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <div>
+            <h3 class="h6 display-font mb-1"><i class="bi bi-people" style="color:var(--marigold);"></i> Who asked, and for what</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">The checkbox stays locked until a price is entered.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-trip" id="clearForOthersBtn"><i class="bi bi-trash3"></i> Clear all</button>
+        </div>
+
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-12 col-md-5">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Item name</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="foItemInput" placeholder="e.g. Darjeeling tea, 250g pack">
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">For whom</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="foWhomInput" placeholder="e.g. Amma">
+          </div>
+          <div class="col-12 col-md-3">
+            <button class="btn btn-marigold btn-sm w-100" id="foAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add request</button>
+          </div>
+        </div>
+        <p class="small mb-3" style="color:var(--cream-dim); opacity:.8;"><i class="bi bi-info-circle"></i> Price isn't needed yet — add it on the item below once you know it.</p>
+
+        <div id="forOthersWrap"></div>
+        <div class="empty-state d-none" id="forOthersEmpty">
+          <i class="bi bi-gift d-block mb-2"></i>
+          No requests yet — add the first thing someone's asked you to bring back.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CHECKLISTS ================= -->
+<section id="checklists" data-tab="lists">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Live tool</div>
+      <h2>Checklists</h2>
+      <p>Tick items off as you sort them. Everything is saved on this device automatically.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h3 class="h6 display-font mb-0"><i class="bi bi-bag-check" style="color:var(--marigold);"></i> Packing &amp; documents</h3>
+          <span class="small" style="color:var(--cream-dim);" id="packProgressLabel">0 / 0</span>
+        </div>
+        <div class="progress-mini mb-3"><div class="bar" id="packProgressBar" style="width:0%"></div></div>
+        <ul class="check-list" id="packList"></ul>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h3 class="h6 display-font mb-0"><i class="bi bi-shield-exclamation" style="color:var(--prayer-red);"></i> Important things — permits &amp; rules</h3>
+          <span class="small" style="color:var(--cream-dim);" id="impProgressLabel">0 / 0</span>
+        </div>
+        <div class="progress-mini mb-3"><div class="bar" id="impProgressBar" style="width:0%; background:var(--prayer-red);"></div></div>
+        <ul class="check-list" id="impList"></ul>
+      </div>
+    </div>
+
+    <div class="card card-trip mt-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <div>
+            <h3 class="h6 display-font mb-1"><i class="bi bi-bag-plus" style="color:var(--marigold);"></i> Pre-trip shopping checklist</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Things to pick up in Dhaka before you leave. This total is separate and does NOT count toward your trip expense totals.</p>
+          </div>
+          <span class="small" style="color:var(--cream-dim);" id="preShopProgressLabel">0 / 0</span>
+        </div>
+        <div class="progress-mini mb-3"><div class="bar" id="preShopProgressBar" style="width:0%"></div></div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6 col-md-3">
+            <div class="total-tile"><div class="amt" id="preShopTotalBDT">৳0</div><div class="lbl">Pre-trip total — BDT</div></div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="total-tile"><div class="amt" id="preShopTotalINR">₹0</div><div class="lbl">Pre-trip total — INR</div></div>
+          </div>
+        </div>
+
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-12 col-md-5">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Item</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="preShopInput" placeholder="e.g. Buy a power bank">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Price (optional)</label>
+            <input type="number" min="0" step="any" class="form-control form-control-sm dark-input" id="preShopPriceInput" placeholder="0">
+          </div>
+          <div class="col-4 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Currency</label>
+            <select class="form-select form-select-sm dark-input" id="preShopCurrencySelect">
+              <option value="BDT">৳ BDT</option>
+              <option value="INR">₹ INR</option>
+            </select>
+          </div>
+          <div class="col-8 col-md-2">
+            <button class="btn btn-marigold btn-sm w-100" id="preShopAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add</button>
+          </div>
+        </div>
+
+        <div id="preShopList"></div>
+        <div class="empty-state d-none" id="preShopEmpty">
+          <i class="bi bi-bag d-block mb-2"></i>
+          Nothing on this list yet — add the first thing you need to buy before you go.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TIPS ================= -->
+<section id="tips" data-tab="trip" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Section 10</div>
+      <h2>Quick tips</h2>
+    </div>
+    <div class="row g-3" id="tipsRow"></div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-outline-trip me-2 mb-2 mb-md-0" id="exportBtn"><i class="bi bi-download"></i> Export my notes &amp; expenses (.json)</button>
+      <button class="btn btn-outline-trip me-2 mb-2 mb-md-0" id="importBtn"><i class="bi bi-upload"></i> Import my data (.json)</button>
+      <input type="file" id="importFileInput" accept="application/json,.json" class="d-none">
+      <button class="btn btn-outline-trip" id="resetAllBtn"><i class="bi bi-arrow-counterclockwise"></i> Reset everything</button>
+      <p class="small mt-3 mb-0" style="color:var(--cream-dim);">If your browser's storage ever gets cleared, importing a previously exported .json file restores your notes, checklists, times and expenses.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="flag-divider">
+    <span style="background:var(--prayer-blue);"></span>
+    <span style="background:var(--prayer-white);"></span>
+    <span style="background:var(--prayer-red);"></span>
+    <span style="background:var(--prayer-green);"></span>
+    <span style="background:var(--marigold);"></span>
+  </div>
+  Prepared based on information available as of September 2026. Bus schedules, entry fees, permit rules — especially Zero Point access for foreign nationals — and hotel prices change. Reconfirm everything closer to your travel date.
+</footer>
+
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+<nav class="bottom-nav" id="bottomNav">
+  <a href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i>Overview</a>
+  <a href="#" data-tab-link="days"><i class="bi bi-calendar3"></i>Days</a>
+  <a href="#" data-tab-link="guide"><i class="bi bi-compass"></i>Places</a>
+  <a href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i>Budget</a>
+  <a href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i>Shop</a>
+  <a href="#" data-tab-link="requests"><i class="bi bi-people"></i>Requests</a>
+  <a href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i>Lists</a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script>
+(async function(){
+  "use strict";
+
+  /* ============================================================
+     MOBILE MENU (explicit control — avoids the flaky double-fire
+     some browsers' touch-emulation / devtools device mode causes
+     with Bootstrap's data-bs-toggle auto-binding)
+  ============================================================ */
+  (function setupMobileMenu(){
+    const toggleBtn = document.getElementById('navTogglerBtn');
+    const offcanvasEl = document.getElementById('navOffcanvas');
+    if (!toggleBtn || !offcanvasEl) return;
+
+    if (typeof bootstrap === 'undefined' || !bootstrap.Offcanvas){
+      console.warn('Bootstrap JS did not load — the mobile menu button will not work. Check your connection or any ad/script blockers.');
+      return;
+    }
+
+    const oc = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+    let lastToggle = 0;
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastToggle < 350) return; // ignore a synthetic double-fire
+      lastToggle = now;
+      oc.toggle();
+    });
+  })();
+
+  /* ============================================================
+     TAB NAVIGATION — one screen at a time instead of one long
+     scroll, so the phone view lands directly on what's asked for.
+  ============================================================ */
+  (function setupTabs(){
+    const TAB_KEY = "sikkim_trip_activetab_v1";
+    const VALID_TABS = ['trip', 'days', 'guide', 'budget', 'shopping', 'requests', 'lists'];
+
+    function showTab(tabName){
+      if (!VALID_TABS.includes(tabName)) tabName = 'trip';
+      document.querySelectorAll('[data-tab]').forEach(el => {
+        el.classList.toggle('tab-visible', el.getAttribute('data-tab') === tabName);
+      });
+      document.querySelectorAll('[data-tab-link]').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-tab-link') === tabName);
+      });
+      try{ localStorage.setItem(TAB_KEY, JSON.stringify(tabName)); }catch(e){ /* storage unavailable */ }
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    document.querySelectorAll('[data-tab-link]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showTab(link.getAttribute('data-tab-link'));
+      });
+    });
+
+    let initialTab = 'trip';
+    try{
+      const raw = localStorage.getItem(TAB_KEY);
+      if (raw) initialTab = JSON.parse(raw);
+    }catch(e){ /* storage unavailable */ }
+    showTab(initialTab);
+
+    window.__showTab = showTab; // exposed in case other code needs to switch tabs
+  })();
+
+  /* ============================================================
+     DATA
+  ============================================================ */
+  const DAYS = [
+    {
+      n:1, date:"Fri 13 Nov", focus:"Dhaka → overnight to Burimari",
+      steps:[
+        ["~8:00–8:30 PM","Board your coach at the Dhaka Gabtoli/Kalyanpur counter."],
+        ["Overnight","Travel north towards Burimari. Try to sleep — tomorrow involves a lot of walking and queueing."]
+      ]
+    },
+    {
+      n:2, date:"Sat 14 Nov", focus:"Border crossing → Siliguri → Gangtok",
+      steps:[
+        ["~6:00–9:00 AM","Burimari–Changrabandha crossing (see Border Crossing section)."],
+        ["~9:30 AM–12:30 PM","Onward transport to Siliguri, dropped at Tenzing Norgay Bus Terminus / Hill Cart Road."],
+        ["~12:30–1:15 PM","Walk to SNT Complex, Pradhan Nagar to verify your permit; quick lunch nearby."],
+        ["~1:30–2:00 PM","Pick up shared jeep at SNT Bus Terminus, Hill Cart Road, towards Gangtok."],
+        ["~6:00–6:30 PM","Drop at Gangtok — Deorali Taxi Stand or Vajra Cinema Stand; check in; evening walk at MG Marg."]
+      ]
+    },
+    {
+      n:3, date:"Sun 15 Nov", focus:"Gangtok local sightseeing",
+      steps:[
+        ["~8:30 AM","Pick-up from your hotel/MG Marg by shared or private taxi."],
+        ["~9:15 AM","Tashi View Point."],
+        ["~10:15 AM","Ganesh Tok."],
+        ["~11:00 AM–12:30 PM","Banjhakri Falls &amp; Energy Park."],
+        ["~1:30–2:30 PM","Namgyal Institute of Tibetology."],
+        ["~2:45 PM","Do Drul Chorten."],
+        ["~4:00 PM","Drop back at hotel/MG Marg; evening free for food and shopping."]
+      ]
+    },
+    {
+      n:4, date:"Mon 16 Nov", focus:"Tsomgo Lake day tour (PAP zone)",
+      steps:[
+        ["~7:00–7:30 AM","Pick-up at your Gangtok hotel by your registered agent's permit vehicle."],
+        ["~9:30–10:00 AM","Arrive Tsomgo (Changu) Lake (~40 km, permit checked en route). Baba Mandir/Nathula excluded — closed to foreigners."],
+        ["~12:00–1:00 PM","Start return drive."],
+        ["~2:30–3:00 PM","Drop back at your Gangtok hotel; rest of the day free."]
+      ]
+    },
+    {
+      n:5, date:"Tue 17 Nov", focus:"Gangtok → Lachung (North Sikkim)",
+      steps:[
+        ["~9:00–9:30 AM","Pick-up at Vajra Stand, Gangtok, by your North Sikkim permit vehicle."],
+        ["Route","Kabi → Phodong → Chungthang → Lachung (~105 km, 5–6 hrs, with photo stops at waterfalls)."],
+        ["~3:30–4:30 PM","Arrive Lachung, drop at your guesthouse/hotel (included in the North Sikkim package). Overnight in Lachung."]
+      ]
+    },
+    {
+      n:6, date:"Wed 18 Nov", focus:"Yumthang Valley (+ Zero Point if permitted) → back to Gangtok",
+      steps:[
+        ["~5:30–6:00 AM","Pick-up at your Lachung guesthouse."],
+        ["~7:00 AM","Arrive Yumthang Valley (~27 km). Continuing to Zero Point depends on your agent's written confirmation for a foreign passport."],
+        ["~10:00 AM","Start drive back to Lachung, then onward to Gangtok."],
+        ["~4:00–5:00 PM","Drop at your Gangtok hotel."]
+      ]
+    },
+    {
+      n:7, date:"Thu 19 Nov", focus:"Gangtok → Darjeeling",
+      steps:[
+        ["~9:00 AM","Optional Rumtek Monastery half-trip, or rest/last shopping at MG Marg."],
+        ["~12:30–1:00 PM","Pick-up at Deorali Taxi Stand, Gangtok, shared jeep towards Darjeeling (~4 hrs)."],
+        ["~4:30–5:00 PM","Drop at Darjeeling — Chowk Bazaar/Ladenla Road taxi stand; check in."],
+        ["Evening","Walk Chowrasta and Mall Road."]
+      ]
+    },
+    {
+      n:8, date:"Fri 20 Nov", focus:"Tiger Hill sunrise + Batasia Loop + Ghoom Monastery + toy train",
+      steps:[
+        ["~3:30–4:00 AM","Pick-up at Chowk Bazaar for the shared jeep to Tiger Hill."],
+        ["~5:00–5:45 AM","Sunrise over Kanchenjunga at Tiger Hill viewpoint."],
+        ["~6:15 AM","Batasia Loop stop."],
+        ["~6:45 AM","Ghoom Monastery stop."],
+        ["~7:30–8:00 AM","Drop back at your hotel; breakfast/rest."],
+        ["~10:40 AM or ~12:15 PM","Toy train joyride at Darjeeling Railway Station (Darjeeling → Ghoom → Darjeeling, ~2 hrs round trip). Check current slot."],
+        ["Evening","Chowrasta / Mall Road."]
+      ]
+    },
+    {
+      n:9, date:"Sat 21 Nov", focus:"Tea estate, other viewpoints &amp; shopping",
+      steps:[
+        ["~9:00 AM","Happy Valley Tea Estate — factory tour + garden walk."],
+        ["~11:30 AM","Japanese Peace Pagoda and Observatory Hill."],
+        ["~1:30–3:00 PM","Padmaja Naidu Himalayan Zoological Park + Himalayan Mountaineering Institute (combined ticket)."],
+        ["~4:00 PM onward","Nehru Road / Chowk Bazaar for tea, handicrafts and woollens."]
+      ]
+    },
+    {
+      n:10, date:"Sun 22 Nov", focus:"Darjeeling → Siliguri (shopping) → board return bus",
+      steps:[
+        ["~9:00–9:30 AM","Pick-up at Chowk Bazaar, Darjeeling, shared jeep to Siliguri (~3–4 hrs)."],
+        ["~1:00 PM","Drop near Tenzing Norgay Bus Terminus/Hill Cart Road, Siliguri."],
+        ["Afternoon","Hong Kong Market (chocolate/cosmetics/shampoo/gifts) and Sreeleathers, Panitanki More, Sevoke Road."],
+        ["~8:00–8:30 PM","Board your return coach towards Changrabandha–Burimari–Dhaka."]
+      ]
+    },
+    {
+      n:11, date:"Mon 23 Nov", focus:"Arrive Dhaka",
+      steps:[
+        ["Overnight","Return crossing at Changrabandha–Burimari (mirrors Border Crossing, in reverse)."],
+        ["Mid-morning","Arrive back at the Dhaka Gabtoli/Kalyanpur counter. End of trip."]
+      ]
+    }
+  ];
+
+  const STAYS = [
+    {place:"Siliguri", when:"Day 2 transit + Day 10 shopping stop", price:"Rs. 600–1,000/night", note:"Budget lodges around Hill Cart Road/Sevoke Road, close to the SNT/Tenzing Norgay terminals — many travellers just freshen up and continue same-day."},
+    {place:"Gangtok", when:"4 nights (Day 2–5, minus 1 night away in Lachung)", price:"Rs. 1,000–1,500/night", note:"Namnang Road/Tibet Road/Sungava area near MG Marg — e.g. Delight Sushanta Awaas, Brothers Guest House, Tashi Thondup Hotel, or a hostel bed for less. Ask your hotel to hold your room for the Lachung night."},
+    {place:"Lachung", when:"1 night", price:"Included in package", note:"Included in your North Sikkim tour package — a basic guesthouse/hotel with dinner and breakfast."},
+    {place:"Darjeeling", when:"3 nights", price:"Rs. 900–1,500/night", note:"Near Chowk Bazaar/Gandhi Road — e.g. Hotel Shanti Palace, Hotel North Point, or a budget homestay. Close to the shared-jeep stand for Tiger Hill pickups."}
+  ];
+
+  const VIEWPOINTS = [
+    ["Tashi View Point","~8 km from Gangtok","Shared/private taxi from MG Marg/hotel","Free"],
+    ["Ganesh Tok","~7 km from Gangtok","Same taxi loop as Tashi View Point","Free"],
+    ["Banjhakri Falls &amp; Energy Park","~6–10 km from Gangtok","Shared taxi from Gangtok market/taxi stand; dropped at gate","Rs. 50–100/person"],
+    ["Tsomgo (Changu) Lake","~40 km from Gangtok","Only via your agent's permit vehicle, picks up/drops at your hotel","Rs. 1,200–1,800/person (permit + shared vehicle)"],
+    ["Lachung","~105 km from Gangtok","North Sikkim permit vehicle, from Vajra Stand/hotel","Included in package"],
+    ["Yumthang Valley","~27 km from Lachung","Same North Sikkim vehicle, day excursion from Lachung","Included in package"],
+    ["Zero Point (Yumesamdong)","~22–25 km beyond Yumthang","Same vehicle, only if your agent secures foreign-passport clearance","Rs. 500–1,000/person extra (if permitted)"],
+    ["Tiger Hill","~11 km from Darjeeling","Shared jeep from Chowk Bazaar, ~3:30–4:00 AM","Rs. 50 (Indian) / Rs. 100 (foreign) entry"],
+    ["Batasia Loop","~5 km from Darjeeling","Same Tiger Hill jeep circuit","Rs. 20–30 (free with toy-train ticket)"],
+    ["Ghoom Monastery","~2 km from Batasia Loop","Same jeep circuit","Small donation/entry"],
+    ["Toy train (Darjeeling Himalayan Railway)","Darjeeling Station → Ghoom → back","Board/alight at Darjeeling Railway Station, Chowk Bazaar","Rs. 1,000 (diesel) / Rs. 1,300–1,500 (steam)"]
+  ];
+
+  const FOOD = [
+    {region:"Gangtok / Sikkim", icon:"bi-cup-hot", items:["Momos (steamed or fried) at MG Marg stalls","Thukpa (noodle soup) — good for cold evenings","Gundruk and Sinki — fermented leafy-green Sikkimese specialities","Sikkimese thali with local rice, dal and seasonal vegetables","Chhurpi (yak/cow milk cheese) snacks and butter tea"]},
+    {region:"Lachung / North Sikkim", icon:"bi-fire", items:["Simple home-style Sikkimese meals at your guesthouse — rice, dal, a vegetable curry, sometimes local pork or chicken","Hot ginger/lemon tea for the cold mornings"]},
+    {region:"Darjeeling", icon:"bi-cup-straw", items:["Darjeeling tea, fresh at a tea-estate cafe or a Mall Road tea lounge","Momos and thukpa are equally popular here","Bakery breakfast at an old Mall Road bakery","Nepali-style dal-bhat thali for a filling, budget meal"]}
+  ];
+
+  const SHOPPING = [
+    ["Chocolates","Siliguri (Hong Kong Market, inside Bidhan Market, Sevoke Road area)","Widest variety of imported and Indian chocolate brands at bargain prices"],
+    ["Shampoo &amp; cosmetics","Siliguri (Hong Kong Market / general stores on Hill Cart Road)","Best selection and prices; Gangtok's MG Marg has stores too but far less variety"],
+    ["Family gifts — tea","Darjeeling (Nehru Road/Mall Road tea shops or a tea-estate shop) and Gangtok (MG Marg)","Buy from a proper tea shop/estate outlet rather than a street stall"],
+    ["Family gifts — handicrafts &amp; woollens","Gangtok (MG Marg) and Darjeeling (Nehru Road/Chowk Bazaar)","Woollen shawls, caps, gloves, Tibetan-style curios, thangka prints, wood carvings"],
+    ["Footwear &amp; leather goods (Sreeleathers)","Siliguri — Sreeleathers, Panitanki More, Sevoke Road","Reliable Indian brand for shoes/bags; do this on Day 10 so you don't carry them through the hills"],
+    ["General souvenirs / cheap gifts","Siliguri (Hong Kong Market)","Toys, imitation jewellery, bags, clothing — bargain hard here"]
+  ];
+
+  const BUDGET_BD = [
+    ["Dhaka ↔ Burimari AC bus (round trip)","BDT 2,000 – 2,400","e.g. Shyamoli or similar operator, ~9–10 hrs each way"],
+    ["Changrabandha → Siliguri onward transport (if not through-ticketed)","INR 150 – 250 (pay after crossing)","Local bus/shared vehicle, ~2.5–3 hrs"],
+    ["Local transport to Dhaka bus counter","BDT 100 – 300","Rickshaw/CNG to Gabtoli/Kalyanpur counter"]
+  ];
+
+  const BUDGET_IN = [
+    ["Siliguri accommodation (if needed)","Rs. 600 – 1,000","Budget lodge near Hill Cart Road; optional if going straight to Gangtok"],
+    ["Siliguri → Gangtok shared jeep","Rs. 300 – 400","One-way, per seat, from SNT Bus Terminus"],
+    ["Gangtok accommodation (4 nights, incl. hold during Lachung night)","Rs. 4,000 – 6,000","Budget hotel near MG Marg"],
+    ["Gangtok local sightseeing (shared/day tour)","Rs. 500 – 800","Or Rs. 3,500–4,500 total for a private car alone"],
+    ["Banjhakri Falls + Namgyal Institute entry","Rs. 75 – 125","Combined entry fees"],
+    ["Tsomgo Lake day tour (permit + vehicle)","Rs. 1,200 – 1,800","Book via registered agent in advance"],
+    ["North Sikkim 1N/2D package (Lachung + Yumthang)","Rs. 2,800 – 4,500","Shared package incl. permit, transport, guesthouse, meals"],
+    ["Zero Point add-on (if permitted)","Rs. 500 – 1,000","Extra vehicle/permit charge, subject to confirmation"],
+    ["Gangtok ↔ Darjeeling shared jeep","Rs. 350 – 450","One-way, per seat"],
+    ["Darjeeling accommodation (3 nights)","Rs. 2,700 – 4,500","Budget hotel near Chowk Bazaar"],
+    ["Tiger Hill early jeep + entry","Rs. 300 – 400","Shared jeep + foreigner entry ticket"],
+    ["Batasia Loop + Ghoom Monastery entry","Rs. 40 – 60","If not already covered by toy-train ticket"],
+    ["Toy train joyride (diesel)","Rs. 1,000","Steam engine Rs. 1,300–1,500 if you upgrade"],
+    ["Happy Valley Tea Estate entry","Rs. 50 – 100",""],
+    ["Zoo + HMI combined ticket","Rs. 100 – 150","Approximate"],
+    ["Darjeeling → Siliguri shared jeep","Rs. 300 – 400","One-way, per seat"],
+    ["Food (10 days × ~Rs. 350/day average)","Rs. 3,500","Mix of local meals and a few restaurant meals"],
+    ["Local transport/misc (rickshaws, tips, SIM/data)","Rs. 1,000 – 1,500","Buy a prepaid SIM in Siliguri on arrival"]
+  ];
+
+  const PACK_ITEMS = [
+    "Passport with Indian visa (Changrabandha/by-road endorsed)",
+    "6–8 passport-size photographs",
+    "Printed hotel booking confirmations — first nights in Siliguri &amp; Gangtok",
+    "Printed Dhaka–Burimari bus ticket (onward and return)",
+    "Bangladesh NID copy + extra photocopies of passport bio &amp; visa page",
+    "Written RAP/PAP confirmation from your registered Sikkim agent (incl. Zero Point status)",
+    "Small BDT→INR (or a little USD) for the first few hours",
+    "Plan to withdraw bulk INR from a Siliguri ATM",
+    "Small INR notes (Rs. 100 / Rs. 500) for jeeps and small shops",
+    "Heavy jacket, thermal layers, gloves, wool cap, warm socks",
+    "Sturdy walking shoes for Tiger Hill and viewpoint walks",
+    "Power bank, universal charger, rain jacket, small daypack, padlock",
+    "Personal medication + altitude-sickness tablets (if doctor-approved)"
+  ];
+
+  const IMPORTANT_ITEMS = [
+    "Contact your registered Sikkim agent now to start RAP/PAP (MHA) clearance",
+    "Get written confirmation on whether Zero Point is achievable for your passport",
+    "Confirm your bus crosses at Burimari–Changrabandha, matching your visa",
+    "Confirm through-ticket vs. self-arranged Changrabandha–Siliguri leg with the operator",
+    "Book Gangtok's first night in advance — useful for permit paperwork",
+    "Remember: solo foreigners need a group of 2+ in permit zones (Tsomgo, North Sikkim) — a shared tour seat covers this",
+    "Get written agent confirmation on exactly which North Sikkim points are included, before paying",
+    "Accept that Nathu La, Baba Mandir &amp; Gurudongmar Lake are closed to foreign nationals — not in this plan",
+    "Buy a local SIM (Airtel/Jio/Vi) in Siliguri — carry a passport copy for registration",
+    "Carry cash once in the hills — card acceptance drops away from MG Marg/Mall Road",
+    "Re-confirm bus timings, permit rules and prices closer to your travel date"
+  ];
+
+  const TIPS = [
+    ["bi-ticket-perforated","Through-ticket or not?","Confirm with your bus operator whether it's a single through-service or you must arrange the Changrabandha–Siliguri leg yourself — this changes your Day 2 morning."],
+    ["bi-images","Carry extra photos","Keep 6–8 extra passport photos and photocopies handy — RAP, PAP, the North Sikkim permit and FRO registration each ask separately."],
+    ["bi-file-earmark-check","Get it in writing","Confirm exactly which North Sikkim points — Yumthang only, or also Zero Point — are included for a Bangladeshi passport, before you pay."],
+    ["bi-sim","Local SIM in Siliguri","Buy Airtel/Jio/Vi on arrival — carry your passport copy, ID is required for registration."],
+    ["bi-cash-stack","Cash in the hills","Card acceptance drops sharply away from MG Marg/Mall Road — carry cash once you're in the hills."],
+    ["bi-arrow-repeat","Things change","Re-confirm bus timings, permit rules and prices closer to your travel date."]
+  ];
+
+  const PRAYER_COLORS = ["prayer-blue","prayer-white","prayer-red","prayer-green"]; // rotates as accent dots
+
+  /* ============================================================
+     STORAGE HELPERS
+  ============================================================ */
+  const LS_KEYS = {
+    notes: "sikkim_trip_notes_v1",
+    pack: "sikkim_trip_pack_v1",
+    important: "sikkim_trip_important_v1",
+    expenses: "sikkim_trip_expenses_v1",
+    fx: "sikkim_trip_fx_v1",
+    planChanges: "sikkim_trip_planchanges_v1",
+    shopList: "sikkim_trip_shoplist_v1",
+    actualTimes: "sikkim_trip_actualtimes_v1",
+    startDate: "sikkim_trip_startdate_v1",
+    preShop: "sikkim_trip_preshop_v1",
+    forOthers: "sikkim_trip_forothers_v1"
+  };
+
+  function loadJSON(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    }catch(e){ return fallback; }
+  }
+
+  /* ============================================================
+     CLOUD SYNC (Firebase Firestore) — optional. Lets your notes,
+     checklists and expenses follow you across phones instead of
+     staying trapped in one browser's local storage.
+
+     TO ENABLE: paste your Firebase project's config below (from
+     Firebase Console → Project Settings → Your apps → Web app),
+     and change FIRESTORE_DOC_PATH to something only you'd guess —
+     it doubles as your access key under the security rule that
+     restricts reads/writes to this exact document path. Until you
+     do, the app runs exactly as before, fully local, no changes.
+  ============================================================ */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAhu_p0RH1VLKkOwoiYxn0O3UWj-c9iVqk",
+    authDomain: "sikkim-trip.firebaseapp.com",
+    projectId: "sikkim-trip",
+    storageBucket: "sikkim-trip.firebasestorage.app",
+    messagingSenderId: "759051040981",
+    appId: "1:759051040981:web:8236e7a21dc5b3d562ca5c"
+  };
+  const FIRESTORE_DOC_PATH = "trips/sikkim-darjeeling-pankaj-2026";
+  const LOCAL_TS_KEY = "sikkim_trip_localts_v1";
+
+  let db = null;
+  let cloudSyncEnabled = false;
+  let cloudPushTimer = null;
+
+  function bumpLocalTimestamp(){
+    try{ localStorage.setItem(LOCAL_TS_KEY, String(Date.now())); }catch(e){ /* storage unavailable */ }
+  }
+  function getLocalTimestamp(){
+    try{ return Number(localStorage.getItem(LOCAL_TS_KEY)) || 0; }catch(e){ return 0; }
+  }
+
+  const syncPill = document.getElementById('syncStatusPill');
+  const syncText = document.getElementById('syncStatusText');
+  function showSyncStatus(state){
+    if (!syncPill) return;
+    syncPill.classList.remove('d-none', 'state-synced', 'state-syncing', 'state-error');
+    if (state === 'syncing'){ syncPill.classList.add('state-syncing'); syncText.textContent = 'Syncing…'; }
+    else if (state === 'synced'){ syncPill.classList.add('state-synced'); syncText.textContent = 'Synced'; }
+    else if (state === 'error'){ syncPill.classList.add('state-error'); syncText.textContent = 'Sync failed'; }
+    else if (state === 'offline'){ syncText.textContent = 'Offline (local only)'; }
+  }
+
+  function pushAllToCloud(){
+    if (!cloudSyncEnabled || !db) return;
+    const payload = {};
+    Object.values(LS_KEYS).forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v !== null) payload[k] = v;
+    });
+    payload._updatedAt = Date.now();
+    showSyncStatus('syncing');
+    db.doc(FIRESTORE_DOC_PATH).set(payload)
+      .then(() => showSyncStatus('synced'))
+      .catch((e) => { console.warn('Cloud push failed:', e); showSyncStatus('error'); });
+  }
+
+  function saveJSON(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* storage unavailable */ }
+    bumpLocalTimestamp();
+    if (cloudSyncEnabled){
+      clearTimeout(cloudPushTimer);
+      cloudPushTimer = setTimeout(pushAllToCloud, 900);
+    }
+  }
+
+  // Initialize Firebase (no-ops silently if the config above is still the placeholder)
+  try{
+    if (typeof firebase !== 'undefined' && FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY"){
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.firestore();
+      cloudSyncEnabled = true;
+    }
+  }catch(e){ console.warn('Firebase init failed — running local-only:', e); }
+
+  // Pull cloud data BEFORE any of the app's own state loads below, so a
+  // newer copy from another phone wins over what's sitting in this browser.
+  if (cloudSyncEnabled){
+    showSyncStatus('syncing');
+    try{
+      const withTimeout = (p, ms) => Promise.race([
+        p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))
+      ]);
+      const snap = await withTimeout(db.doc(FIRESTORE_DOC_PATH).get(), 6000);
+      if (snap.exists){
+        const cloud = snap.data();
+        const cloudTs = Number(cloud._updatedAt) || 0;
+        const localTs = getLocalTimestamp();
+        if (cloudTs > localTs){
+          Object.values(LS_KEYS).forEach(k => {
+            if (cloud[k] !== undefined) localStorage.setItem(k, cloud[k]);
+          });
+          try{ localStorage.setItem(LOCAL_TS_KEY, String(cloudTs)); }catch(e){ /* storage unavailable */ }
+        } else if (localTs > cloudTs){
+          // this device has edits the cloud hasn't seen yet — push them up
+          setTimeout(pushAllToCloud, 400);
+        }
+      }
+      showSyncStatus('synced');
+    }catch(e){
+      console.warn('Cloud sync unavailable, using local data only:', e);
+      showSyncStatus('offline');
+    }
+  }
+
+  let notesData = loadJSON(LS_KEYS.notes, {});
+  let packData = loadJSON(LS_KEYS.pack, {});
+  let importantData = loadJSON(LS_KEYS.important, {});
+  let expenses = loadJSON(LS_KEYS.expenses, []);
+  let planChanges = loadJSON(LS_KEYS.planChanges, {});
+  let shopList = loadJSON(LS_KEYS.shopList, []);
+  let actualTimes = loadJSON(LS_KEYS.actualTimes, {});
+  let tripStartDate = loadJSON(LS_KEYS.startDate, "2026-11-13");
+  let preShopList = loadJSON(LS_KEYS.preShop, []);
+  let forOthersList = loadJSON(LS_KEYS.forOthers, []);
+
+  /* ============================================================
+     TRIP DATES — recompute every day's calendar date from a
+     single, changeable Day-1 start date
+  ============================================================ */
+  const WEEKDAY_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function getDateForDay(dayNumber){
+    // tripStartDate is "YYYY-MM-DD" for Day 1; parse as local calendar date (no time zone drift)
+    const [y, m, d] = tripStartDate.split('-').map(Number);
+    const base = new Date(y, (m - 1), d);
+    base.setDate(base.getDate() + (dayNumber - 1));
+    return base;
+  }
+
+  function formatDate(dateObj, format){
+    const wk = WEEKDAY_SHORT[dateObj.getDay()];
+    const dd = dateObj.getDate();
+    const mo = MONTH_SHORT[dateObj.getMonth()];
+    const yr = dateObj.getFullYear();
+    if (format === 'short') return `${dd} ${mo}`;
+    if (format === 'withYear') return `${dd} ${mo} ${yr}`;
+    return `${wk} ${dd} ${mo}`; // 'full' (default)
+  }
+
+  function applyAllDates(){
+    document.querySelectorAll('[data-date-for-day]').forEach(el => {
+      const dayN = Number(el.getAttribute('data-date-for-day'));
+      const fmt = el.getAttribute('data-format') || 'full';
+      el.textContent = formatDate(getDateForDay(dayN), fmt);
+    });
+    const startLabelEl = document.getElementById('currentStartLabel');
+    if (startLabelEl){
+      const d1 = getDateForDay(1);
+      startLabelEl.textContent = `${WEEKDAY_SHORT[d1.getDay()]}, ${formatDate(d1, 'withYear')}`;
+    }
+    const dateInput = document.getElementById('tripStartDateInput');
+    if (dateInput) dateInput.value = tripStartDate;
+  }
+
+  /* ============================================================
+     RENDER: DAY PANELS (single-panel view) + JUMP CHIPS
+  ============================================================ */
+  const dayPanelsEl = document.getElementById('dayPanels');
+  const dayJumpRow = document.getElementById('dayJumpRow');
+  const expDaySelect = document.getElementById('expDay');
+
+  let expDayOptions = '<option value="0">Not day-specific</option>';
+
+  function showDay(dayN){
+    document.querySelectorAll('.day-panel').forEach(p => {
+      p.classList.toggle('panel-visible', Number(p.getAttribute('data-day-panel')) === dayN);
+    });
+    document.querySelectorAll('.day-jump').forEach(c => {
+      c.classList.toggle('active', Number(c.getAttribute('data-day-jump')) === dayN);
+    });
+    try{ localStorage.setItem('sikkim_trip_activeday_v1', JSON.stringify(dayN)); }catch(e){ /* storage unavailable */ }
+    const panel = document.querySelector(`.day-panel[data-day-panel="${dayN}"]`);
+    if (panel){
+      const rowBottom = dayJumpRow.getBoundingClientRect().bottom;
+      const panelTop = panel.getBoundingClientRect().top;
+      window.scrollBy({ top: panelTop - rowBottom - 12, behavior: 'smooth' });
+    }
+  }
+
+  DAYS.forEach((day) => {
+    // Jump chip
+    const chip = document.createElement('a');
+    chip.href = "#";
+    chip.className = "day-jump";
+    chip.setAttribute('data-day-jump', day.n);
+    chip.textContent = "Day " + day.n;
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      showDay(day.n);
+    });
+    dayJumpRow.appendChild(chip);
+
+    expDayOptions += `<option value="${day.n}">Day ${day.n} — ${day.date}</option>`;
+
+    // Day panel
+    const item = document.createElement('div');
+    item.className = "day-panel";
+    item.setAttribute('data-day-panel', day.n);
+    item.id = "day-" + day.n;
+
+    const stepsHtml = day.steps.map((s, si) => {
+      const startKey = day.n + "_" + si + "_start";
+      const endKey = day.n + "_" + si + "_end";
+      const tzKey = day.n + "_" + si + "_tz";
+      const startVal = actualTimes[startKey] || "";
+      const endVal = actualTimes[endKey] || "";
+      const defaultTz = (day.n === 1 || day.n === 11) ? "BDT" : "IST";
+      const tzVal = actualTimes[tzKey] || defaultTz;
+      return `
+      <div class="step">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div class="tm">${s[0]}</div>
+          <div class="actual-time-wrap">
+            <div class="actual-time-group">
+              <span class="atg-label">Actual start</span>
+              <input type="time" class="form-control dark-input actual-time-input" data-time-key="${startKey}" value="${startVal}">
+            </div>
+            <div class="actual-time-group">
+              <span class="atg-label">Actual end</span>
+              <input type="time" class="form-control dark-input actual-time-input" data-time-key="${endKey}" value="${endVal}">
+            </div>
+            <div class="actual-time-group">
+              <span class="atg-label">Zone</span>
+              <select class="form-select dark-input tz-select actual-time-input" data-time-key="${tzKey}">
+                <option value="BDT" ${tzVal === 'BDT' ? 'selected' : ''}>BDT</option>
+                <option value="IST" ${tzVal === 'IST' ? 'selected' : ''}>IST</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="tx">${s[1]}</div>
+      </div>
+    `;
+    }).join("");
+
+    item.innerHTML = `
+      <div class="day-panel-header">
+        <span class="day-badge">${day.n}</span>
+        <span class="day-title-wrap">
+          <span>${day.focus}</span>
+          <span class="dsub" data-date-for-day="${day.n}">${day.date}</span>
+        </span>
+      </div>
+      <div class="day-panel-body">
+        <div class="day-timeline">${stepsHtml}</div>
+
+        <div class="optional-plan-box" data-day="${day.n}">
+          <button class="btn btn-sm btn-outline-trip optional-toggle" type="button" data-plan-toggle="${day.n}">
+            <i class="bi bi-signpost-2"></i> Plan changed on the day? <span class="badge-optional">optional</span>
+          </button>
+          <div class="optional-content mt-2 d-none" data-plan-content="${day.n}">
+            <p class="small mb-2" style="color:var(--cream-dim);">Ended up somewhere not on the plan, or skipped something above? Log it here — it won't touch the original itinerary.</p>
+            <input type="text" class="form-control dark-input plan-change-input mb-2" data-plan-input="${day.n}" placeholder="e.g. Skipped Ganesh Tok, went to Hanuman Tok instead">
+            <div class="row g-2 align-items-end mb-2">
+              <div class="col-4 col-md-3">
+                <span class="atg-label d-block mb-1">Start</span>
+                <input type="time" class="form-control form-control-sm dark-input" data-plan-start="${day.n}">
+              </div>
+              <div class="col-4 col-md-3">
+                <span class="atg-label d-block mb-1">End</span>
+                <input type="time" class="form-control form-control-sm dark-input" data-plan-end="${day.n}">
+              </div>
+              <div class="col-4 col-md-3">
+                <span class="atg-label d-block mb-1">Zone</span>
+                <select class="form-select form-select-sm dark-input" data-plan-tz="${day.n}">
+                  <option value="BDT" ${(day.n === 1 || day.n === 11) ? 'selected' : ''}>BDT</option>
+                  <option value="IST" ${(day.n === 1 || day.n === 11) ? '' : 'selected'}>IST</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <button class="btn btn-marigold btn-sm w-100 plan-change-add" type="button" data-plan-add="${day.n}"><i class="bi bi-plus-lg"></i> Add</button>
+              </div>
+            </div>
+            <ul class="plan-change-list" data-plan-list="${day.n}"></ul>
+          </div>
+        </div>
+
+        <div class="notes-box mt-3">
+          <label><i class="bi bi-pencil-square"></i> Your notes for Day ${day.n}</label>
+          <textarea class="form-control" data-day="${day.n}" placeholder="Actual costs, contact numbers, what worked, what to skip next time...">${notesData[day.n] || ""}</textarea>
+          <div class="save-hint" data-day-hint="${day.n}"><i class="bi bi-check2"></i> Saved</div>
+        </div>
+      </div>
+    `;
+    dayPanelsEl.appendChild(item);
+  });
+
+  expDaySelect.innerHTML = expDayOptions;
+
+  // show the remembered day (or Day 1 by default) without an animated scroll on first load
+  (function initDayView(){
+    let startDay = 1;
+    try{
+      const raw = localStorage.getItem('sikkim_trip_activeday_v1');
+      if (raw){
+        const n = JSON.parse(raw);
+        if (Number.isInteger(n) && n >= 1 && n <= DAYS.length) startDay = n;
+      }
+    }catch(e){ /* storage unavailable */ }
+    document.querySelectorAll('.day-panel').forEach(p => {
+      p.classList.toggle('panel-visible', Number(p.getAttribute('data-day-panel')) === startDay);
+    });
+    document.querySelectorAll('.day-jump').forEach(c => {
+      c.classList.toggle('active', Number(c.getAttribute('data-day-jump')) === startDay);
+    });
+  })();
+
+  // notes autosave (debounced per field)
+  let noteTimers = {};
+  dayPanelsEl.querySelectorAll('textarea[data-day]').forEach(ta => {
+    ta.addEventListener('input', () => {
+      const d = ta.getAttribute('data-day');
+      notesData[d] = ta.value;
+      clearTimeout(noteTimers[d]);
+      noteTimers[d] = setTimeout(() => {
+        saveJSON(LS_KEYS.notes, notesData);
+        const hint = document.querySelector(`.save-hint[data-day-hint="${d}"]`);
+        if (hint){
+          hint.classList.add('show');
+          setTimeout(() => hint.classList.remove('show'), 1400);
+        }
+      }, 500);
+    });
+  });
+
+  // actual-time autosave (debounced per field; selects use 'change', time inputs use 'input')
+  let timeTimers = {};
+  function saveActualTimeField(inp){
+    const key = inp.getAttribute('data-time-key');
+    actualTimes[key] = inp.value;
+    clearTimeout(timeTimers[key]);
+    timeTimers[key] = setTimeout(() => saveJSON(LS_KEYS.actualTimes, actualTimes), 400);
+  }
+  dayPanelsEl.querySelectorAll('.actual-time-input').forEach(inp => {
+    const evt = inp.tagName === 'SELECT' ? 'change' : 'input';
+    inp.addEventListener(evt, () => saveActualTimeField(inp));
+  });
+
+  /* ============================================================
+     OPTIONAL PLAN CHANGES (per day)
+  ============================================================ */
+  function renderPlanChanges(dayN){
+    const list = document.querySelector(`[data-plan-list="${dayN}"]`);
+    if (!list) return;
+    const entries = planChanges[dayN] || [];
+    list.innerHTML = "";
+    entries.forEach(entry => {
+      const li = document.createElement('li');
+      const hasTime = entry.start || entry.end;
+      const tzClass = entry.tz === 'BDT' ? 'bdt' : '';
+      const timeRow = hasTime
+        ? `<div class="pc-time-row"><span class="tz-badge ${tzClass}">${entry.tz || 'IST'}</span><span class="small" style="color:var(--marigold); font-weight:600;">${entry.start || '—'} ${entry.end ? '– ' + entry.end : ''}</span></div>`
+        : "";
+      li.innerHTML = `<div>${timeRow}<span>${entry.text}</span></div><button class="pc-del" data-pc-del="${entry.id}" data-pc-day="${dayN}" title="Remove"><i class="bi bi-x-circle"></i></button>`;
+      list.appendChild(li);
+    });
+    // reflect on the toggle button if there are saved entries, even before opening
+    const toggle = document.querySelector(`[data-plan-toggle="${dayN}"]`);
+    if (toggle){
+      let countBadge = toggle.querySelector('.pc-count');
+      if (entries.length){
+        if (!countBadge){
+          countBadge = document.createElement('span');
+          countBadge.className = "badge-optional pc-count";
+          countBadge.style.background = "rgba(223,164,59,0.18)";
+          countBadge.style.color = "var(--marigold)";
+          countBadge.style.borderColor = "rgba(223,164,59,0.4)";
+          toggle.appendChild(countBadge);
+        }
+        countBadge.textContent = entries.length + (entries.length === 1 ? " change" : " changes");
+      } else if (countBadge){
+        countBadge.remove();
+      }
+    }
+  }
+
+  DAYS.forEach(day => renderPlanChanges(day.n));
+
+  document.querySelectorAll('[data-plan-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const n = btn.getAttribute('data-plan-toggle');
+      const content = document.querySelector(`[data-plan-content="${n}"]`);
+      if (content) content.classList.toggle('d-none');
+    });
+  });
+
+  function addPlanChange(dayN){
+    const input = document.querySelector(`[data-plan-input="${dayN}"]`);
+    const startInp = document.querySelector(`[data-plan-start="${dayN}"]`);
+    const endInp = document.querySelector(`[data-plan-end="${dayN}"]`);
+    const tzSel = document.querySelector(`[data-plan-tz="${dayN}"]`);
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    if (!planChanges[dayN]) planChanges[dayN] = [];
+    planChanges[dayN].push({
+      id: Date.now(),
+      text,
+      start: startInp ? startInp.value : "",
+      end: endInp ? endInp.value : "",
+      tz: tzSel ? tzSel.value : "IST"
+    });
+    saveJSON(LS_KEYS.planChanges, planChanges);
+    input.value = "";
+    if (startInp) startInp.value = "";
+    if (endInp) endInp.value = "";
+    renderPlanChanges(dayN);
+  }
+
+  document.querySelectorAll('[data-plan-add]').forEach(btn => {
+    const n = btn.getAttribute('data-plan-add');
+    btn.addEventListener('click', () => addPlanChange(n));
+  });
+  document.querySelectorAll('[data-plan-input]').forEach(input => {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter'){ e.preventDefault(); addPlanChange(input.getAttribute('data-plan-input')); }
+    });
+  });
+  dayPanelsEl.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-pc-del]');
+    if (!delBtn) return;
+    const id = Number(delBtn.getAttribute('data-pc-del'));
+    const dayN = delBtn.getAttribute('data-pc-day');
+    planChanges[dayN] = (planChanges[dayN] || []).filter(x => x.id !== id);
+    saveJSON(LS_KEYS.planChanges, planChanges);
+    renderPlanChanges(dayN);
+  });
+
+  /* ============================================================
+     RENDER: STAY
+  ============================================================ */
+  const stayRow = document.getElementById('stayRow');
+  STAYS.forEach(s => {
+    const col = document.createElement('div');
+    col.className = "col-md-6 col-lg-3";
+    col.innerHTML = `
+      <div class="card card-trip stay-card">
+        <div class="card-body">
+          <h3 class="h6 display-font mb-1">${s.place}</h3>
+          <div class="small mb-2" style="color:var(--cream-dim);">${s.when}</div>
+          <div class="price mb-2">${s.price}</div>
+          <p class="small mb-0" style="color:var(--cream-dim);">${s.note}</p>
+        </div>
+      </div>
+    `;
+    stayRow.appendChild(col);
+  });
+
+  /* ============================================================
+     RENDER: VIEWPOINTS
+  ============================================================ */
+  const vBody = document.getElementById('viewpointsBody');
+  VIEWPOINTS.forEach(v => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="fw-semibold" style="color:var(--cream)">${v[0]}</td><td>${v[1]}</td><td>${v[2]}</td><td>${v[3]}</td>`;
+    vBody.appendChild(tr);
+  });
+
+  /* ============================================================
+     RENDER: FOOD
+  ============================================================ */
+  const foodRow = document.getElementById('foodRow');
+  FOOD.forEach(f => {
+    const col = document.createElement('div');
+    col.className = "col-md-4";
+    col.innerHTML = `
+      <div class="card card-trip h-100">
+        <div class="card-body">
+          <i class="bi ${f.icon}" style="color:var(--marigold); font-size:1.3rem;"></i>
+          <h3 class="h6 display-font mt-2 mb-2">${f.region}</h3>
+          <ul class="small mb-0" style="color:var(--cream-dim); padding-left:1.1rem; line-height:1.7;">
+            ${f.items.map(i => `<li>${i}</li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    `;
+    foodRow.appendChild(col);
+  });
+
+  /* ============================================================
+     RENDER: SHOPPING
+  ============================================================ */
+  const shoppingBody = document.getElementById('shoppingBody');
+  SHOPPING.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="fw-semibold" style="color:var(--cream)">${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td>`;
+    shoppingBody.appendChild(tr);
+  });
+
+  /* ============================================================
+     RENDER: BUDGET REFERENCE TABLES
+  ============================================================ */
+  const budgetBdBody = document.getElementById('budgetBdBody');
+  BUDGET_BD.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${b[0]}</td><td class="fw-semibold" style="color:var(--marigold)">${b[1]}</td><td>${b[2]}</td>`;
+    budgetBdBody.appendChild(tr);
+  });
+  const budgetInBody = document.getElementById('budgetInBody');
+  BUDGET_IN.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${b[0]}</td><td class="fw-semibold" style="color:var(--marigold)">${b[1]}</td><td>${b[2]}</td>`;
+    budgetInBody.appendChild(tr);
+  });
+
+  /* ============================================================
+     RENDER: TIPS
+  ============================================================ */
+  const tipsRow = document.getElementById('tipsRow');
+  TIPS.forEach(t => {
+    const col = document.createElement('div');
+    col.className = "col-md-6 col-lg-4";
+    col.innerHTML = `
+      <div class="card card-trip h-100">
+        <div class="card-body">
+          <i class="bi ${t[0]}" style="color:var(--marigold); font-size:1.25rem;"></i>
+          <h3 class="h6 display-font mt-2 mb-1">${t[1]}</h3>
+          <p class="small mb-0" style="color:var(--cream-dim);">${t[2]}</p>
+        </div>
+      </div>
+    `;
+    tipsRow.appendChild(col);
+  });
+
+  /* ============================================================
+     SHOPPING CHECKLIST (buy first, price after purchase)
+  ============================================================ */
+  const shopListWrap = document.getElementById('shopListWrap');
+  const shopEmpty = document.getElementById('shopEmpty');
+  const shopItemInput = document.getElementById('shopItemInput');
+
+  function fmtNum(n){ return Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2}); }
+
+  function renderShopList(){
+    shopListWrap.innerHTML = "";
+    if (!shopList.length){
+      shopEmpty.classList.remove('d-none');
+    } else {
+      shopEmpty.classList.add('d-none');
+    }
+    shopList.forEach(item => {
+      const row = document.createElement('div');
+      row.className = "shop-item-row" + (item.bought ? " bought" : "");
+      row.innerHTML = `
+        <input type="checkbox" data-shop-bought="${item.id}" ${item.bought ? "checked" : ""} title="Mark as bought">
+        <span class="shop-name">${item.name}</span>
+        <input type="number" min="0" step="any" class="form-control form-control-sm dark-input shop-price-input" data-shop-price="${item.id}" placeholder="Price paid" value="${item.price !== null && item.price !== undefined ? item.price : ''}">
+        <select class="form-select form-select-sm dark-input shop-currency-select" data-shop-currency="${item.id}">
+          <option value="INR" ${item.currency === 'INR' ? 'selected' : ''}>₹ INR</option>
+          <option value="BDT" ${item.currency === 'BDT' ? 'selected' : ''}>৳ BDT</option>
+        </select>
+        <button class="expense-row-del" data-shop-del="${item.id}" title="Remove"><i class="bi bi-x-circle"></i></button>
+      `;
+      shopListWrap.appendChild(row);
+    });
+    renderShopTotals();
+  }
+
+  function renderShopTotals(){
+    const totalINR = shopList.filter(i => i.currency === 'INR' && i.price).reduce((s,i) => s + Number(i.price), 0);
+    const totalBDT = shopList.filter(i => i.currency === 'BDT' && i.price).reduce((s,i) => s + Number(i.price), 0);
+    document.getElementById('shopTotalINR').textContent = "₹" + fmtNum(totalINR);
+    document.getElementById('shopTotalBDT').textContent = "৳" + fmtNum(totalBDT);
+  }
+
+  function addShopItem(){
+    const name = shopItemInput.value.trim();
+    if (!name) return;
+    shopList.push({ id: Date.now(), name, bought:false, price:null, currency:'INR' });
+    saveJSON(LS_KEYS.shopList, shopList);
+    shopItemInput.value = "";
+    renderShopList();
+    if (typeof refreshTotals === 'function') refreshTotals();
+  }
+
+  document.getElementById('shopItemAddBtn').addEventListener('click', addShopItem);
+  shopItemInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); addShopItem(); }
+  });
+
+  shopListWrap.addEventListener('change', (e) => {
+    const boughtCb = e.target.closest('[data-shop-bought]');
+    const priceInput = e.target.closest('[data-shop-price]');
+    const currSelect = e.target.closest('[data-shop-currency]');
+    if (boughtCb){
+      const id = Number(boughtCb.getAttribute('data-shop-bought'));
+      const it = shopList.find(x => x.id === id);
+      if (it){ it.bought = boughtCb.checked; saveJSON(LS_KEYS.shopList, shopList); renderShopList(); refreshTotals(); }
+    }
+    if (priceInput){
+      const id = Number(priceInput.getAttribute('data-shop-price'));
+      const it = shopList.find(x => x.id === id);
+      if (it){
+        it.price = priceInput.value === "" ? null : parseFloat(priceInput.value);
+        if (it.price !== null && it.price > 0) it.bought = true;
+        saveJSON(LS_KEYS.shopList, shopList);
+        renderShopList();
+        refreshTotals();
+      }
+    }
+    if (currSelect){
+      const id = Number(currSelect.getAttribute('data-shop-currency'));
+      const it = shopList.find(x => x.id === id);
+      if (it){ it.currency = currSelect.value; saveJSON(LS_KEYS.shopList, shopList); renderShopTotals(); refreshTotals(); }
+    }
+  });
+
+  shopListWrap.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-shop-del]');
+    if (!delBtn) return;
+    const id = Number(delBtn.getAttribute('data-shop-del'));
+    shopList = shopList.filter(x => x.id !== id);
+    saveJSON(LS_KEYS.shopList, shopList);
+    renderShopList();
+    refreshTotals();
+  });
+
+  document.getElementById('clearShopBtn').addEventListener('click', () => {
+    if (!shopList.length) return;
+    if (confirm("Clear your whole shopping list? This can't be undone.")){
+      shopList = [];
+      saveJSON(LS_KEYS.shopList, shopList);
+      renderShopList();
+      refreshTotals();
+    }
+  });
+
+  renderShopList();
+
+  /* ============================================================
+     BUY FOR OTHERS — separate request list; ticking "bought" adds
+     a linked entry into shopList (so it counts in the shopping
+     total); unticking removes that linked entry again.
+  ============================================================ */
+  const forOthersWrap = document.getElementById('forOthersWrap');
+  const forOthersEmpty = document.getElementById('forOthersEmpty');
+
+  function fmtFO(n){ return Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2}); }
+
+  function renderForOthers(){
+    forOthersWrap.innerHTML = "";
+    if (!forOthersList.length){
+      forOthersEmpty.classList.remove('d-none');
+    } else {
+      forOthersEmpty.classList.add('d-none');
+    }
+    forOthersList.forEach(item => {
+      const hasPrice = item.price !== null && item.price !== undefined && item.price > 0;
+      const row = document.createElement('div');
+      row.className = "shop-item-row" + (item.bought ? " bought" : "");
+      row.innerHTML = `
+        <input type="checkbox" data-fo-bought="${item.id}" ${item.bought ? "checked" : ""} ${hasPrice ? "" : "disabled"} title="${hasPrice ? "Mark as bought" : "Enter a price first"}">
+        <span class="shop-name">${item.name}</span>
+        <span class="tz-badge">${item.forWhom || "someone"}</span>
+        <input type="number" min="0" step="any" class="form-control form-control-sm dark-input shop-price-input" data-fo-price="${item.id}" placeholder="Price" value="${item.price !== null && item.price !== undefined ? item.price : ''}">
+        <select class="form-select form-select-sm dark-input shop-currency-select" data-fo-currency="${item.id}">
+          <option value="INR" ${item.currency === 'INR' ? 'selected' : ''}>₹ INR</option>
+          <option value="BDT" ${item.currency === 'BDT' ? 'selected' : ''}>৳ BDT</option>
+        </select>
+        <button class="expense-row-del" data-fo-del="${item.id}" title="Remove"><i class="bi bi-x-circle"></i></button>
+      `;
+      forOthersWrap.appendChild(row);
+    });
+  }
+
+  function addForOthersItem(){
+    const name = document.getElementById('foItemInput').value.trim();
+    const forWhom = document.getElementById('foWhomInput').value.trim();
+    if (!name) return;
+    forOthersList.push({ id: Date.now(), name, price: null, currency: 'INR', forWhom, bought: false, linkedShopId: null });
+    saveJSON(LS_KEYS.forOthers, forOthersList);
+    document.getElementById('foItemInput').value = "";
+    document.getElementById('foWhomInput').value = "";
+    renderForOthers();
+  }
+  document.getElementById('foAddBtn').addEventListener('click', addForOthersItem);
+  document.getElementById('foItemInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); addForOthersItem(); }
+  });
+
+  function unlinkFromShop(item){
+    if (!item.linkedShopId) return;
+    shopList = shopList.filter(s => s.id !== item.linkedShopId);
+    saveJSON(LS_KEYS.shopList, shopList);
+    item.linkedShopId = null;
+  }
+
+  forOthersWrap.addEventListener('change', (e) => {
+    const cb = e.target.closest('[data-fo-bought]');
+    const priceInput = e.target.closest('[data-fo-price]');
+    const currSelect = e.target.closest('[data-fo-currency]');
+
+    if (cb){
+      const id = Number(cb.getAttribute('data-fo-bought'));
+      const item = forOthersList.find(x => x.id === id);
+      if (!item) return;
+
+      if (cb.checked){
+        if (!item.price || item.price <= 0){
+          alert("Enter a price for this item before marking it as bought.");
+          cb.checked = false;
+          return;
+        }
+        const shopEntry = { id: Date.now(), name: `${item.name} (for ${item.forWhom || "someone"})`, bought: true, price: item.price, currency: item.currency };
+        shopList.push(shopEntry);
+        saveJSON(LS_KEYS.shopList, shopList);
+        item.bought = true;
+        item.linkedShopId = shopEntry.id;
+      } else {
+        unlinkFromShop(item);
+        item.bought = false;
+      }
+      saveJSON(LS_KEYS.forOthers, forOthersList);
+      renderForOthers();
+      renderShopList();
+      refreshTotals();
+    }
+
+    if (priceInput){
+      const id = Number(priceInput.getAttribute('data-fo-price'));
+      const item = forOthersList.find(x => x.id === id);
+      if (item){
+        item.price = priceInput.value === "" ? null : parseFloat(priceInput.value);
+        // keep an already-linked shopping-list entry in sync with the corrected price
+        if (item.linkedShopId){
+          const linked = shopList.find(s => s.id === item.linkedShopId);
+          if (linked) linked.price = item.price;
+          saveJSON(LS_KEYS.shopList, shopList);
+        }
+        saveJSON(LS_KEYS.forOthers, forOthersList);
+        renderForOthers();
+        renderShopList();
+        refreshTotals();
+      }
+    }
+
+    if (currSelect){
+      const id = Number(currSelect.getAttribute('data-fo-currency'));
+      const item = forOthersList.find(x => x.id === id);
+      if (item){
+        item.currency = currSelect.value;
+        if (item.linkedShopId){
+          const linked = shopList.find(s => s.id === item.linkedShopId);
+          if (linked) linked.currency = item.currency;
+          saveJSON(LS_KEYS.shopList, shopList);
+        }
+        saveJSON(LS_KEYS.forOthers, forOthersList);
+        renderShopList();
+        refreshTotals();
+      }
+    }
+  });
+
+  forOthersWrap.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-fo-del]');
+    if (!delBtn) return;
+    const id = Number(delBtn.getAttribute('data-fo-del'));
+    const item = forOthersList.find(x => x.id === id);
+    if (item && item.linkedShopId){
+      shopList = shopList.filter(s => s.id !== item.linkedShopId);
+      saveJSON(LS_KEYS.shopList, shopList);
+      renderShopList();
+      refreshTotals();
+    }
+    forOthersList = forOthersList.filter(x => x.id !== id);
+    saveJSON(LS_KEYS.forOthers, forOthersList);
+    renderForOthers();
+  });
+
+  document.getElementById('clearForOthersBtn').addEventListener('click', () => {
+    if (!forOthersList.length) return;
+    if (confirm("Clear the whole 'bring from India' list? Any items already added to your shopping list from here will be removed too.")){
+      const linkedIds = forOthersList.filter(i => i.linkedShopId).map(i => i.linkedShopId);
+      if (linkedIds.length){
+        shopList = shopList.filter(s => !linkedIds.includes(s.id));
+        saveJSON(LS_KEYS.shopList, shopList);
+        renderShopList();
+        refreshTotals();
+      }
+      forOthersList = [];
+      saveJSON(LS_KEYS.forOthers, forOthersList);
+      renderForOthers();
+    }
+  });
+
+  renderForOthers();
+
+  /* ============================================================
+     CHECKLISTS: PACKING + IMPORTANT
+  ============================================================ */
+  function buildChecklist(items, dataObj, listEl, storageKey, progLabelEl, progBarEl, extraClass){
+    listEl.innerHTML = "";
+    items.forEach((text, i) => {
+      const id = "chk-" + storageKey + "-" + i;
+      const checked = !!dataObj[i];
+      const li = document.createElement('li');
+      li.className = "check-item" + (extraClass ? " " + extraClass : "") + (checked ? " checked" : "");
+      li.innerHTML = `
+        <input type="checkbox" id="${id}" ${checked ? "checked" : ""}>
+        <label for="${id}">${text}</label>
+      `;
+      const cb = li.querySelector('input');
+      cb.addEventListener('change', () => {
+        dataObj[i] = cb.checked;
+        saveJSON(storageKey, dataObj);
+        li.classList.toggle('checked', cb.checked);
+        updateProgress();
+      });
+      listEl.appendChild(li);
+    });
+    function updateProgress(){
+      const total = items.length;
+      const done = Object.values(dataObj).filter(Boolean).length;
+      progLabelEl.textContent = `${done} / ${total}`;
+      progBarEl.style.width = (total ? (done/total*100) : 0) + "%";
+    }
+    updateProgress();
+  }
+
+  buildChecklist(PACK_ITEMS, packData, document.getElementById('packList'), LS_KEYS.pack,
+    document.getElementById('packProgressLabel'), document.getElementById('packProgressBar'));
+
+  buildChecklist(IMPORTANT_ITEMS, importantData, document.getElementById('impList'), LS_KEYS.important,
+    document.getElementById('impProgressLabel'), document.getElementById('impProgressBar'), "important-item");
+
+  /* ============================================================
+     PRE-TRIP SHOPPING CHECKLIST — user-added items with an
+     optional price. Deliberately NEVER touches computeSpend() /
+     the main trip expense totals; it has its own separate total.
+  ============================================================ */
+  const preShopListEl = document.getElementById('preShopList');
+  const preShopEmpty = document.getElementById('preShopEmpty');
+  const preShopInput = document.getElementById('preShopInput');
+  const preShopPriceInput = document.getElementById('preShopPriceInput');
+  const preShopCurrencySelect = document.getElementById('preShopCurrencySelect');
+  const preShopProgLabel = document.getElementById('preShopProgressLabel');
+  const preShopProgBar = document.getElementById('preShopProgressBar');
+
+  function fmtPreShop(n){ return Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2}); }
+
+  function renderPreShop(){
+    preShopListEl.innerHTML = "";
+    if (!preShopList.length){
+      preShopEmpty.classList.remove('d-none');
+    } else {
+      preShopEmpty.classList.add('d-none');
+    }
+    preShopList.forEach(item => {
+      const symbol = item.currency === 'INR' ? '₹' : '৳';
+      const row = document.createElement('div');
+      row.className = "shop-item-row" + (item.done ? " bought" : "");
+      row.innerHTML = `
+        <input type="checkbox" data-preshop-done="${item.id}" ${item.done ? "checked" : ""}>
+        <span class="shop-name">${item.name}</span>
+        <input type="number" min="0" step="any" class="form-control form-control-sm dark-input shop-price-input" data-preshop-price="${item.id}" placeholder="Price" value="${item.price !== null && item.price !== undefined ? item.price : ''}">
+        <select class="form-select form-select-sm dark-input shop-currency-select" data-preshop-currency="${item.id}">
+          <option value="BDT" ${item.currency === 'BDT' ? 'selected' : ''}>৳ BDT</option>
+          <option value="INR" ${item.currency === 'INR' ? 'selected' : ''}>₹ INR</option>
+        </select>
+        <button class="expense-row-del" data-preshop-del="${item.id}" title="Remove"><i class="bi bi-x-circle"></i></button>
+      `;
+      preShopListEl.appendChild(row);
+    });
+    updatePreShopProgress();
+    updatePreShopTotals();
+  }
+  function updatePreShopProgress(){
+    const total = preShopList.length;
+    const done = preShopList.filter(i => i.done).length;
+    preShopProgLabel.textContent = `${done} / ${total}`;
+    preShopProgBar.style.width = (total ? (done / total * 100) : 0) + "%";
+  }
+  function updatePreShopTotals(){
+    const totalBDT = preShopList.filter(i => i.currency === 'BDT' && i.price).reduce((s, i) => s + Number(i.price), 0);
+    const totalINR = preShopList.filter(i => i.currency === 'INR' && i.price).reduce((s, i) => s + Number(i.price), 0);
+    document.getElementById('preShopTotalBDT').textContent = "৳" + fmtPreShop(totalBDT);
+    document.getElementById('preShopTotalINR').textContent = "₹" + fmtPreShop(totalINR);
+  }
+  function addPreShopItem(){
+    const name = preShopInput.value.trim();
+    if (!name) return;
+    const priceVal = parseFloat(preShopPriceInput.value);
+    preShopList.push({
+      id: Date.now(),
+      name,
+      done: false,
+      price: (priceVal && priceVal > 0) ? priceVal : null,
+      currency: preShopCurrencySelect.value
+    });
+    saveJSON(LS_KEYS.preShop, preShopList);
+    preShopInput.value = "";
+    preShopPriceInput.value = "";
+    renderPreShop();
+  }
+  document.getElementById('preShopAddBtn').addEventListener('click', addPreShopItem);
+  preShopInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); addPreShopItem(); }
+  });
+  preShopListEl.addEventListener('change', (e) => {
+    const doneCb = e.target.closest('[data-preshop-done]');
+    const priceInput = e.target.closest('[data-preshop-price]');
+    const currSelect = e.target.closest('[data-preshop-currency]');
+    if (doneCb){
+      const id = Number(doneCb.getAttribute('data-preshop-done'));
+      const item = preShopList.find(x => x.id === id);
+      if (item){ item.done = doneCb.checked; saveJSON(LS_KEYS.preShop, preShopList); renderPreShop(); }
+    }
+    if (priceInput){
+      const id = Number(priceInput.getAttribute('data-preshop-price'));
+      const item = preShopList.find(x => x.id === id);
+      if (item){
+        item.price = priceInput.value === "" ? null : parseFloat(priceInput.value);
+        saveJSON(LS_KEYS.preShop, preShopList);
+        renderPreShop();
+      }
+    }
+    if (currSelect){
+      const id = Number(currSelect.getAttribute('data-preshop-currency'));
+      const item = preShopList.find(x => x.id === id);
+      if (item){ item.currency = currSelect.value; saveJSON(LS_KEYS.preShop, preShopList); updatePreShopTotals(); }
+    }
+  });
+  preShopListEl.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-preshop-del]');
+    if (!delBtn) return;
+    const id = Number(delBtn.getAttribute('data-preshop-del'));
+    preShopList = preShopList.filter(i => i.id !== id);
+    saveJSON(LS_KEYS.preShop, preShopList);
+    renderPreShop();
+  });
+  renderPreShop();
+
+  /* ============================================================
+     EXPENSE TRACKER
+  ============================================================ */
+  const expenseForm = document.getElementById('expenseForm');
+  const expenseTableBody = document.getElementById('expenseTableBody');
+  const expenseEmpty = document.getElementById('expenseEmpty');
+  const fxInput = document.getElementById('fxRate');
+  fxInput.value = loadJSON(LS_KEYS.fx, "");
+
+  fxInput.addEventListener('input', () => {
+    saveJSON(LS_KEYS.fx, fxInput.value);
+    refreshTotals();
+  });
+
+  function fmt(n){
+    return Number(n).toLocaleString('en-IN', {maximumFractionDigits: 2});
+  }
+
+  const CATEGORY_ORDER = ["Transport","Stay","Food","Permits & Tours","Shopping","SIM / Misc","Other"];
+
+  function computeSpend(){
+    const byCategory = {};
+    CATEGORY_ORDER.forEach(c => byCategory[c] = {INR:0, BDT:0});
+    function add(cat, currency, amount){
+      if (!byCategory[cat]) byCategory[cat] = {INR:0, BDT:0};
+      byCategory[cat][currency] = (byCategory[cat][currency] || 0) + (Number(amount) || 0);
+    }
+    expenses.forEach(e => add(e.category, e.currency, e.amount));
+    shopList.forEach(i => { if (i.price) add('Shopping', i.currency, i.price); });
+    let totalINR = 0, totalBDT = 0;
+    Object.values(byCategory).forEach(v => { totalINR += v.INR; totalBDT += v.BDT; });
+    return { byCategory, totalINR, totalBDT };
+  }
+
+  function renderExpenses(){
+    expenseTableBody.innerHTML = "";
+    if (!expenses.length){
+      expenseEmpty.classList.remove('d-none');
+    } else {
+      expenseEmpty.classList.add('d-none');
+    }
+    // newest first
+    [...expenses].sort((a,b) => b.id - a.id).forEach(exp => {
+      const tr = document.createElement('tr');
+      const symbol = exp.currency === 'BDT' ? '৳' : '₹';
+      const dayLabel = exp.day && exp.day !== "0" ? "Day " + exp.day : "—";
+      tr.innerHTML = `
+        <td>${exp.desc}</td>
+        <td><span class="cat-tag">${exp.category}</span></td>
+        <td>${dayLabel}</td>
+        <td class="text-end fw-semibold" style="color:var(--marigold)">${symbol}${fmt(exp.amount)}</td>
+        <td class="text-end"><button class="expense-row-del" title="Delete" data-id="${exp.id}"><i class="bi bi-x-circle"></i></button></td>
+      `;
+      expenseTableBody.appendChild(tr);
+    });
+    expenseTableBody.querySelectorAll('.expense-row-del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        deleteExpenseById(Number(btn.getAttribute('data-id')));
+      });
+    });
+  }
+
+  function deleteExpenseById(id){
+    expenses = expenses.filter(e => e.id !== id);
+    saveJSON(LS_KEYS.expenses, expenses);
+    renderExpenses();
+    renderFoodLog();
+    refreshTotals();
+  }
+
+  function renderTotals(){
+    const spend = computeSpend();
+    document.getElementById('totalBDT').textContent = "৳" + fmt(spend.totalBDT);
+    document.getElementById('totalINR').textContent = "₹" + fmt(spend.totalINR);
+    document.getElementById('totalEntries').textContent = expenses.length + shopList.filter(i => i.price).length;
+
+    const rate = parseFloat(fxInput.value);
+    const combinedEl = document.getElementById('combinedBDT');
+    if (rate && rate > 0){
+      const combined = spend.totalBDT + (spend.totalINR / rate);
+      combinedEl.textContent = "৳" + fmt(combined);
+    } else {
+      combinedEl.textContent = "Set rate →";
+    }
+  }
+
+  function renderCategoryBreakdown(){
+    const spend = computeSpend();
+    const body = document.getElementById('categoryBreakdownBody');
+    body.innerHTML = "";
+    CATEGORY_ORDER.forEach(cat => {
+      const v = spend.byCategory[cat] || {INR:0, BDT:0};
+      if (!v.INR && !v.BDT) return; // skip untouched categories to keep it tidy
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="fw-semibold" style="color:var(--cream)">${cat}</td>
+        <td class="text-end">${v.INR ? "₹" + fmt(v.INR) : "—"}</td>
+        <td class="text-end">${v.BDT ? "৳" + fmt(v.BDT) : "—"}</td>
+      `;
+      body.appendChild(tr);
+    });
+    if (!body.children.length){
+      body.innerHTML = `<tr><td colspan="3" class="text-center" style="color:var(--cream-dim);">Nothing logged yet — add an expense, a meal, or a shopping item to see it here.</td></tr>`;
+    } else {
+      const tr = document.createElement('tr');
+      tr.style.borderTop = "2px solid var(--line)";
+      tr.innerHTML = `
+        <td class="fw-bold" style="color:var(--marigold)">Total</td>
+        <td class="text-end fw-bold" style="color:var(--marigold)">${spend.totalINR ? "₹" + fmt(spend.totalINR) : "—"}</td>
+        <td class="text-end fw-bold" style="color:var(--marigold)">${spend.totalBDT ? "৳" + fmt(spend.totalBDT) : "—"}</td>
+      `;
+      body.appendChild(tr);
+    }
+  }
+
+  function refreshTotals(){
+    renderTotals();
+    renderCategoryBreakdown();
+  }
+
+  /* ---- Food log (writes into the shared `expenses` array, category "Food") ---- */
+  const foodDaySelect = document.getElementById('foodDaySelect');
+  foodDaySelect.innerHTML = expDayOptions;
+  const foodLogBody = document.getElementById('foodLogBody');
+  const foodLogEmpty = document.getElementById('foodLogEmpty');
+
+  function renderFoodLog(){
+    const foodEntries = expenses.filter(e => e.category === 'Food').sort((a,b) => b.id - a.id);
+    foodLogBody.innerHTML = "";
+    if (!foodEntries.length){
+      foodLogEmpty.classList.remove('d-none');
+    } else {
+      foodLogEmpty.classList.add('d-none');
+    }
+    foodEntries.forEach(exp => {
+      const symbol = exp.currency === 'BDT' ? '৳' : '₹';
+      const dayLabel = exp.day && exp.day !== "0" ? "Day " + exp.day : "—";
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${dayLabel}</td>
+        <td>${exp.desc}</td>
+        <td class="text-end fw-semibold" style="color:var(--marigold)">${symbol}${fmt(exp.amount)}</td>
+        <td class="text-end"><button class="expense-row-del" title="Delete" data-food-del="${exp.id}"><i class="bi bi-x-circle"></i></button></td>
+      `;
+      foodLogBody.appendChild(tr);
+    });
+    foodLogBody.querySelectorAll('[data-food-del]').forEach(btn => {
+      btn.addEventListener('click', () => deleteExpenseById(Number(btn.getAttribute('data-food-del'))));
+    });
+  }
+
+  document.getElementById('foodAddBtn').addEventListener('click', () => {
+    const meal = document.getElementById('foodMealInput').value.trim();
+    const price = parseFloat(document.getElementById('foodPriceInput').value);
+    const currency = document.getElementById('foodCurrencySelect').value;
+    const day = foodDaySelect.value;
+    if (!meal || !price || price <= 0) return;
+    expenses.push({ id: Date.now(), desc: meal, amount: price, currency, category: 'Food', day });
+    saveJSON(LS_KEYS.expenses, expenses);
+    document.getElementById('foodMealInput').value = "";
+    document.getElementById('foodPriceInput').value = "";
+    renderExpenses();
+    renderFoodLog();
+    refreshTotals();
+  });
+
+  expenseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const desc = document.getElementById('expDesc').value.trim();
+    const amount = parseFloat(document.getElementById('expAmount').value);
+    const currency = document.getElementById('expCurrency').value;
+    const category = document.getElementById('expCategory').value;
+    const day = document.getElementById('expDay').value;
+    if (!desc || !amount || amount <= 0) return;
+
+    expenses.push({ id: Date.now(), desc, amount, currency, category, day });
+    saveJSON(LS_KEYS.expenses, expenses);
+    expenseForm.reset();
+    document.getElementById('expCurrency').value = currency;
+    renderExpenses();
+    renderFoodLog();
+    refreshTotals();
+  });
+
+  document.getElementById('clearExpensesBtn').addEventListener('click', () => {
+    if (!expenses.length) return;
+    if (confirm("Clear all logged expenses? This can't be undone.")){
+      expenses = [];
+      saveJSON(LS_KEYS.expenses, expenses);
+      renderExpenses();
+      renderFoodLog();
+      refreshTotals();
+    }
+  });
+
+  renderExpenses();
+  renderFoodLog();
+  refreshTotals();
+
+  /* ============================================================
+     COUNTDOWN
+  ============================================================ */
+  function updateCountdown(){
+    const d1 = getDateForDay(1);
+    // departure coach leaves ~8:00 PM Dhaka time (+06:00) on Day 1
+    const dep = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate(), 20, 0, 0);
+    const now = new Date();
+    const diffMs = dep - now;
+    const numEl = document.getElementById('countdownNum');
+    const unitEl = document.getElementById('countdownUnit');
+    if (diffMs <= 0){
+      numEl.textContent = "Bon voyage";
+      unitEl.textContent = "your trip window has begun";
+      return;
+    }
+    const days = Math.floor(diffMs / (1000*60*60*24));
+    const hours = Math.floor((diffMs / (1000*60*60)) % 24);
+    if (days > 0){
+      numEl.textContent = days;
+      unitEl.textContent = days === 1 ? "day to go" : "days to go";
+    } else {
+      numEl.textContent = hours;
+      unitEl.textContent = hours === 1 ? "hour to go" : "hours to go";
+    }
+  }
+  applyAllDates();
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  document.getElementById('updateStartDateBtn').addEventListener('click', () => {
+    const input = document.getElementById('tripStartDateInput');
+    const val = input.value;
+    if (!val){
+      alert("Pick a date first.");
+      return;
+    }
+    if (!confirm("This shifts every day of your plan to start from this new date. Your notes, checklists and logged times stay attached to the same day numbers. Continue?")){
+      return;
+    }
+    tripStartDate = val;
+    saveJSON(LS_KEYS.startDate, tripStartDate);
+    applyAllDates();
+    updateCountdown();
+  });
+
+  /* ============================================================
+     EXPORT / RESET
+  ============================================================ */
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      notes: notesData,
+      packingChecklist: packData,
+      importantChecklist: importantData,
+      expenses: expenses,
+      fxRate: fxInput.value,
+      planChanges: planChanges,
+      shoppingList: shopList,
+      actualTimes: actualTimes,
+      tripStartDate: tripStartDate,
+      preShopList: preShopList,
+      forOthersList: forOthersList
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "sikkim-darjeeling-trip-data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('resetAllBtn').addEventListener('click', () => {
+    if (confirm("Reset all notes, checklists, dates and expenses on this device? Export first if you want a backup.")){
+      Object.values(LS_KEYS).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  });
+
+  document.getElementById('importBtn').addEventListener('click', () => {
+    document.getElementById('importFileInput').click();
+  });
+
+  document.getElementById('importFileInput').addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      let data;
+      try{
+        data = JSON.parse(ev.target.result);
+      }catch(err){
+        alert("That doesn't look like a valid export file. Please choose the .json file you downloaded from this planner.");
+        e.target.value = "";
+        return;
+      }
+      const looksValid = data && typeof data === 'object' && (
+        data.notes || data.expenses || data.packingChecklist || data.importantChecklist ||
+        data.planChanges || data.shoppingList || data.actualTimes || data.fxRate !== undefined ||
+        data.tripStartDate || data.preShopList || data.forOthersList
+      );
+      if (!looksValid){
+        alert("That JSON file doesn't match this planner's export format.");
+        e.target.value = "";
+        return;
+      }
+      if (!confirm("This will overwrite your current notes, checklists, times, dates and expenses on this device with the imported file. Continue?")){
+        e.target.value = "";
+        return;
+      }
+      if (data.notes) saveJSON(LS_KEYS.notes, data.notes);
+      if (data.packingChecklist) saveJSON(LS_KEYS.pack, data.packingChecklist);
+      if (data.importantChecklist) saveJSON(LS_KEYS.important, data.importantChecklist);
+      if (data.expenses) saveJSON(LS_KEYS.expenses, data.expenses);
+      if (data.fxRate !== undefined) saveJSON(LS_KEYS.fx, data.fxRate);
+      if (data.planChanges) saveJSON(LS_KEYS.planChanges, data.planChanges);
+      if (data.shoppingList) saveJSON(LS_KEYS.shopList, data.shoppingList);
+      if (data.actualTimes) saveJSON(LS_KEYS.actualTimes, data.actualTimes);
+      if (data.tripStartDate) saveJSON(LS_KEYS.startDate, data.tripStartDate);
+      if (data.preShopList) saveJSON(LS_KEYS.preShop, data.preShopList);
+      if (data.forOthersList) saveJSON(LS_KEYS.forOthers, data.forOthersList);
+      alert("Import complete — reloading the page now.");
+      location.reload();
+    };
+    reader.onerror = () => alert("Couldn't read that file — please try again.");
+    reader.readAsText(file);
+  });
+
+})();
+</script>
+</body>
+</html>
