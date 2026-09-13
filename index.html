@@ -73,6 +73,25 @@
   .subnav-chip:hover{ background: var(--panel-2); color: var(--cream); }
   .subnav-chip i{ margin-right:.3rem; color: var(--marigold); }
 
+  /* ---------- Login gate ---------- */
+  #authGate{
+    position: fixed; inset:0; z-index:2000;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(1200px 500px at 15% -5%, rgba(76,126,168,0.20), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(223,164,59,0.10), transparent 55%),
+      linear-gradient(180deg, #0B1424 0%, #0F1B2E 40%, #10192B 100%);
+    padding: 1.2rem;
+  }
+  #authGate.d-none{ display:none !important; }
+  .auth-card{
+    width: 100%; max-width: 380px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.6rem;
+  }
+
   /* ---------- Texture backdrop ---------- */
   .peaks-bg{
     position: fixed; inset:0; z-index:-1; pointer-events:none;
@@ -187,6 +206,17 @@
 
   /* ---------- Section shells ---------- */
   section{ padding: 3.2rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 84px; }
+
+  /* Each tab's FIRST section needs to clear the fixed navbar — the hero already
+     handles this with its own inline style; these are the other tabs' openers. */
+  #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary{
+    padding-top: 5.5rem;
+  }
+  @media (max-width: 767px){
+    #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary{
+      padding-top: 4.6rem;
+    }
+  }
   .section-head{ margin-bottom: 1.6rem; }
   .section-head .kicker{
     color: var(--marigold);
@@ -464,19 +494,21 @@
     background: rgba(15,27,46,0.94);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--line);
-    display:flex; justify-content:space-around;
-    padding: .4rem .1rem calc(.4rem + env(safe-area-inset-bottom));
+    display:flex; justify-content:flex-start;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding: .4rem .3rem calc(.4rem + env(safe-area-inset-bottom));
   }
+  .bottom-nav::-webkit-scrollbar{ display:none; }
   @media (min-width: 992px){ .bottom-nav{ display:none; } }
   .bottom-nav a{
-    color: var(--cream-dim); text-decoration:none; text-align:center; font-size:.52rem;
-    display:flex; flex-direction:column; align-items:center; gap:.1rem; flex:1;
-    padding:.15rem 0;
-    min-width:0;
+    color: var(--cream-dim); text-decoration:none; text-align:center; font-size:.62rem;
+    display:flex; flex-direction:column; align-items:center; gap:.15rem; flex:0 0 auto;
+    padding:.2rem .55rem;
     white-space:nowrap;
   }
   .bottom-nav a.active, .bottom-nav a:hover{ color: var(--marigold); }
-  .bottom-nav i{ font-size:1rem; }
+  .bottom-nav i{ font-size:1.1rem; }
 
   footer.site-footer{ padding: 2.2rem 0 2.6rem; text-align:center; color: var(--cream-dim); font-size:.85rem; }
   footer.site-footer .flag-divider{ margin-bottom:1rem; }
@@ -553,6 +585,36 @@
 </head>
 <body>
 
+<!-- ================= LOGIN GATE (Firebase Authentication) ================= -->
+<div id="authGate" class="d-none">
+  <div class="auth-card">
+    <div class="flag-divider mb-3">
+      <span style="background:var(--prayer-blue);"></span>
+      <span style="background:var(--prayer-white);"></span>
+      <span style="background:var(--prayer-red);"></span>
+      <span style="background:var(--prayer-green);"></span>
+      <span style="background:var(--marigold);"></span>
+    </div>
+    <h2 class="display-font text-center mb-1" style="font-size:1.4rem;">Sikkim &amp; Darjeeling</h2>
+    <p class="text-center small mb-4" style="color:var(--cream-dim);">Sign in to view and edit this trip.</p>
+    <form id="loginForm">
+      <div class="mb-2">
+        <label class="form-label small mb-1" style="color:var(--cream-dim);">Email</label>
+        <input type="email" class="form-control dark-input" id="loginEmail" autocomplete="username" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small mb-1" style="color:var(--cream-dim);">Password</label>
+        <input type="password" class="form-control dark-input" id="loginPass" autocomplete="current-password" required>
+      </div>
+      <div id="loginError" class="small mb-3 d-none" style="color:#e07f76;"></div>
+      <button type="submit" class="btn btn-marigold w-100" id="loginSubmitBtn"><i class="bi bi-unlock"></i> Sign in</button>
+    </form>
+    <p class="small text-center mt-3 mb-0" style="color:var(--cream-dim); opacity:.7;">Access is controlled through Firebase — only accounts you've created in the Firebase console can sign in.</p>
+  </div>
+</div>
+
+<div id="appContent" class="d-none">
+
 <div class="peaks-bg">
   <svg viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <polygon points="0,220 0,140 120,60 240,150 360,40 480,130 620,20 760,120 900,55 1040,140 1180,70 1320,150 1440,90 1440,220" fill="#152136"/>
@@ -571,11 +633,13 @@
       <ul class="navbar-nav ms-auto flex-nowrap align-items-lg-center" id="navLinksDesktop">
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i> Overview</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="days"><i class="bi bi-calendar3"></i> Day-by-Day</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places &amp; Food</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i> Food</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i> Budget</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="requests"><i class="bi bi-people"></i> Requests</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Checklists</a></li>
+        <li class="nav-item ms-lg-2"><button class="btn btn-sm btn-outline-trip" id="logoutBtnDesktop"><i class="bi bi-box-arrow-right"></i> Log out</button></li>
       </ul>
     </div>
   </div>
@@ -591,11 +655,13 @@
     <ul class="nav flex-column gap-1" id="navLinksMobile">
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="trip" href="#"><i class="bi bi-signpost-split"></i> Overview — trip info, prep &amp; tips</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="days" href="#"><i class="bi bi-calendar3"></i> Day-by-Day Plan</a></li>
-      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="guide" href="#"><i class="bi bi-compass"></i> Places &amp; Food — stay, viewpoints, meals</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="guide" href="#"><i class="bi bi-compass"></i> Places — stay, viewpoints, visits</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="food" href="#"><i class="bi bi-cup-hot"></i> Food — what to try &amp; your log</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="budget" href="#"><i class="bi bi-pie-chart"></i> Budget Summary</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="shopping" href="#"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="requests" href="#"><i class="bi bi-people"></i> Requests — bring from India</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="lists" href="#"><i class="bi bi-check2-square"></i> Checklists — packing &amp; permits</a></li>
+      <li class="nav-item mt-2"><button class="btn btn-sm btn-outline-trip w-100" id="logoutBtnMobile"><i class="bi bi-box-arrow-right"></i> Log out</button></li>
     </ul>
   </div>
 </div>
@@ -607,6 +673,7 @@
       <a class="subnav-chip" href="#home"><i class="bi bi-signpost-split"></i>Overview</a>
       <a class="subnav-chip" href="#before"><i class="bi bi-clipboard-check"></i>Before You Go</a>
       <a class="subnav-chip" href="#crossing"><i class="bi bi-signpost-2"></i>Border Crossing</a>
+      <a class="subnav-chip" href="#report"><i class="bi bi-file-earmark-pdf"></i>Download Report</a>
       <a class="subnav-chip" href="#tips"><i class="bi bi-lightbulb"></i>Quick Tips</a>
     </div>
     <div class="row align-items-center g-4">
@@ -772,6 +839,51 @@
   </div>
 </section>
 
+<!-- ================= DOWNLOAD REPORT ================= -->
+<section id="report" data-tab="trip">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Export</div>
+      <h2>Download your trip report</h2>
+      <p>Pick what you want in the PDF — day-by-day notes, places visited, food, shopping, checklists, requests, and your budget — then generate it in one tap.</p>
+    </div>
+
+    <div class="card card-trip">
+      <div class="card-body">
+        <div class="row g-2 mb-2">
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repDays" checked><label for="repDays">Day-by-day itinerary &amp; notes</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repPlaces" checked><label for="repPlaces">Places visited</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repFood" checked><label for="repFood">Food log</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repShopping" checked><label for="repShopping">Shopping &amp; requests</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repChecklists" checked><label for="repChecklists">Checklists</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repBudget" checked><label for="repBudget">Budget summary</label></div>
+          </div>
+        </div>
+
+        <div id="repBudgetSubOptions" class="ps-3 mb-3" style="border-left:2px solid var(--line);">
+          <p class="small mb-2" style="color:var(--cream-dim);">Within the budget summary:</p>
+          <div class="check-item mb-2"><input type="checkbox" id="repBudgetFood" checked><label for="repBudgetFood">Include food costs</label></div>
+          <div class="check-item"><input type="checkbox" id="repBudgetShopping" checked><label for="repBudgetShopping">Include shopping costs</label></div>
+        </div>
+
+        <button class="btn btn-marigold" id="generateReportBtn" type="button"><i class="bi bi-file-earmark-pdf"></i> Generate PDF</button>
+        <span class="small ms-2" style="color:var(--cream-dim);" id="reportStatusMsg"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= DAY BY DAY ================= -->
 <section id="itinerary" data-tab="days">
   <div class="container">
@@ -793,7 +905,7 @@
     <div class="subnav-scroll">
       <a class="subnav-chip" href="#stay"><i class="bi bi-house-door"></i>Where to Stay</a>
       <a class="subnav-chip" href="#viewpoints"><i class="bi bi-binoculars"></i>Viewpoints</a>
-      <a class="subnav-chip" href="#food"><i class="bi bi-cup-hot"></i>Food</a>
+      <a class="subnav-chip" href="#visitedLog"><i class="bi bi-geo-alt"></i>Your Visit Log</a>
     </div>
     <div class="section-head">
       <div class="kicker">Section 4</div>
@@ -817,11 +929,49 @@
         <tbody id="viewpointsBody"></tbody>
       </table>
     </div>
+
+    <div class="card card-trip mt-4" id="visitedLog">
+      <div class="card-body">
+        <h3 class="h6 display-font mb-1"><i class="bi bi-geo-alt" style="color:var(--marigold);"></i> Your visit log</h3>
+        <p class="small mb-3" style="color:var(--cream-dim);">Track which viewpoints you actually went to, which day, and how you got there.</p>
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Day</label>
+            <select class="form-select form-select-sm dark-input" id="visitDaySelect"></select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Viewpoint / place</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="visitPlaceInput" placeholder="e.g. Tashi View Point">
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">How you got there</label>
+            <select class="form-select form-select-sm dark-input" id="visitHowSelect">
+              <option>Travel agency</option>
+              <option>Arranged myself</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2">
+            <button class="btn btn-marigold btn-sm w-100" id="visitAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add</button>
+          </div>
+        </div>
+        <div class="table-responsive table-responsive-trip">
+          <table class="table table-trip mb-0">
+            <thead><tr><th>Day</th><th>Viewpoint</th><th>How</th><th></th></tr></thead>
+            <tbody id="visitLogBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state d-none" id="visitLogEmpty">
+          <i class="bi bi-signpost d-block mb-2"></i>
+          Nothing logged yet — add the first place you visited.
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ================= FOOD ================= -->
-<section id="food" data-tab="guide">
+<section id="food" data-tab="food">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Section 6</div>
@@ -833,34 +983,47 @@
     <div class="card card-trip mt-4">
       <div class="card-body">
         <h3 class="h6 display-font mb-1"><i class="bi bi-journal-text" style="color:var(--marigold);"></i> What did you actually eat?</h3>
-        <p class="small mb-3" style="color:var(--cream-dim);">Log meals by day, in BDT or INR — these count straight into your Budget totals below, so you never have to add them up twice.</p>
+        <p class="small mb-3" style="color:var(--cream-dim);">Log meals by day, where you ate, and how it was — the price counts straight into your Budget totals, so you never have to add it up twice.</p>
         <div class="row g-2 align-items-end mb-3">
           <div class="col-6 col-md-2">
             <label class="form-label small mb-1" style="color:var(--cream-dim);">Day</label>
             <select class="form-select form-select-sm dark-input" id="foodDaySelect"></select>
           </div>
-          <div class="col-6 col-md-4">
+          <div class="col-6 col-md-3">
             <label class="form-label small mb-1" style="color:var(--cream-dim);">Meal / item</label>
-            <input type="text" class="form-control form-control-sm dark-input" id="foodMealInput" placeholder="e.g. Momos at MG Marg">
+            <input type="text" class="form-control form-control-sm dark-input" id="foodMealInput" placeholder="e.g. Momos">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Where</label>
+            <input type="text" class="form-control form-control-sm dark-input" id="foodWhereInput" placeholder="e.g. MG Marg stall">
           </div>
           <div class="col-6 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Review</label>
+            <select class="form-select form-select-sm dark-input" id="foodReviewSelect">
+              <option>Good</option>
+              <option>Moderate</option>
+              <option>Bad</option>
+              <option>Very bad</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-1">
             <label class="form-label small mb-1" style="color:var(--cream-dim);">Price</label>
             <input type="number" min="0" step="any" class="form-control form-control-sm dark-input" id="foodPriceInput" placeholder="0">
           </div>
-          <div class="col-6 col-md-2">
-            <label class="form-label small mb-1" style="color:var(--cream-dim);">Currency</label>
+          <div class="col-6 col-md-1">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Curr.</label>
             <select class="form-select form-select-sm dark-input" id="foodCurrencySelect">
-              <option value="INR">₹ INR</option>
-              <option value="BDT">৳ BDT</option>
+              <option value="INR">₹</option>
+              <option value="BDT">৳</option>
             </select>
           </div>
-          <div class="col-12 col-md-2">
-            <button class="btn btn-marigold btn-sm w-100" id="foodAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add</button>
+          <div class="col-12">
+            <button class="btn btn-marigold btn-sm" id="foodAddBtn" type="button"><i class="bi bi-plus-lg"></i> Add</button>
           </div>
         </div>
         <div class="table-responsive table-responsive-trip">
           <table class="table table-trip mb-0">
-            <thead><tr><th>Day</th><th>Meal / item</th><th class="text-end">Price</th><th></th></tr></thead>
+            <thead><tr><th>Day</th><th>Meal</th><th>Where</th><th>Review</th><th class="text-end">Price</th><th></th></tr></thead>
             <tbody id="foodLogBody"></tbody>
           </table>
         </div>
@@ -895,6 +1058,19 @@
       <div class="col-6 col-lg-3">
         <div class="total-tile"><div class="amt" id="combinedBDT">৳0</div><div class="lbl">Combined, in BDT</div></div>
       </div>
+    </div>
+
+    <div class="converter-box mb-4">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <i class="bi bi-arrow-left-right" style="color:var(--marigold);"></i>
+        <span class="small fw-semibold">Quick BDT ⇄ INR rate</span>
+      </div>
+      <div class="input-group input-group-sm" style="max-width:320px;">
+        <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">1 BDT =</span>
+        <input type="number" step="0.001" class="form-control dark-input" id="fxRate" placeholder="e.g. 0.72">
+        <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">INR</span>
+      </div>
+      <div class="small mt-2" style="color:var(--cream-dim);">Set today's rate to see a single combined total above. Rates change — check before you rely on it.</div>
     </div>
 
     <div class="card card-trip mb-4">
@@ -990,19 +1166,6 @@
               <button type="submit" class="btn btn-marigold w-100"><i class="bi bi-check2"></i> Add expense</button>
             </form>
           </div>
-        </div>
-
-        <div class="converter-box">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-arrow-left-right" style="color:var(--marigold);"></i>
-            <span class="small fw-semibold">Quick BDT ⇄ INR rate</span>
-          </div>
-          <div class="input-group input-group-sm">
-            <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">1 BDT =</span>
-            <input type="number" step="0.001" class="form-control dark-input" id="fxRate" placeholder="e.g. 0.72">
-            <span class="input-group-text" style="background:var(--panel); color:var(--cream-dim); border-color:var(--line);">INR</span>
-          </div>
-          <div class="small mt-2" style="color:var(--cream-dim);">Set today's rate to see a single combined total on the Budget tab. Rates change — check before you rely on it.</div>
         </div>
       </div>
 
@@ -1237,15 +1400,21 @@
   <a href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i>Overview</a>
   <a href="#" data-tab-link="days"><i class="bi bi-calendar3"></i>Days</a>
   <a href="#" data-tab-link="guide"><i class="bi bi-compass"></i>Places</a>
+  <a href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i>Food</a>
   <a href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i>Budget</a>
   <a href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i>Shop</a>
   <a href="#" data-tab-link="requests"><i class="bi bi-people"></i>Requests</a>
   <a href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i>Lists</a>
 </nav>
 
+</div><!-- /#appContent -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
 (async function(){
   "use strict";
@@ -1283,7 +1452,7 @@
   ============================================================ */
   (function setupTabs(){
     const TAB_KEY = "sikkim_trip_activetab_v1";
-    const VALID_TABS = ['trip', 'days', 'guide', 'budget', 'shopping', 'requests', 'lists'];
+    const VALID_TABS = ['trip', 'days', 'guide', 'food', 'budget', 'shopping', 'requests', 'lists'];
 
     function showTab(tabName){
       if (!VALID_TABS.includes(tabName)) tabName = 'trip';
@@ -1539,7 +1708,8 @@
     actualTimes: "sikkim_trip_actualtimes_v1",
     startDate: "sikkim_trip_startdate_v1",
     preShop: "sikkim_trip_preshop_v1",
-    forOthers: "sikkim_trip_forothers_v1"
+    forOthers: "sikkim_trip_forothers_v1",
+    visitLog: "sikkim_trip_visitlog_v1"
   };
 
   function loadJSON(key, fallback){
@@ -1574,6 +1744,7 @@
 
   let db = null;
   let cloudSyncEnabled = false;
+  let authInstance = null;
   let cloudPushTimer = null;
 
   function bumpLocalTimestamp(){
@@ -1626,6 +1797,68 @@
     }
   }catch(e){ console.warn('Firebase init failed — running local-only:', e); }
 
+  // Require a signed-in Firebase user before touching Firestore. This is
+  // enforced for real by the security rule (request.auth != null) — unlike a
+  // page-level password, this can't be bypassed by viewing source, since the
+  // database itself refuses unauthenticated requests.
+  const authGateEl = document.getElementById('authGate');
+  const appContentEl = document.getElementById('appContent');
+
+  function showApp(){
+    authGateEl.classList.add('d-none');
+    appContentEl.classList.remove('d-none');
+  }
+  function showGate(){
+    appContentEl.classList.add('d-none');
+    authGateEl.classList.remove('d-none');
+  }
+
+  if (cloudSyncEnabled && typeof firebase.auth === 'function'){
+    authInstance = firebase.auth();
+
+    let currentUser = await new Promise((resolve) => {
+      const unsub = authInstance.onAuthStateChanged((u) => { unsub(); resolve(u); });
+    });
+
+    if (!currentUser){
+      showGate();
+      currentUser = await new Promise((resolve) => {
+        document.getElementById('loginForm').addEventListener('submit', async function onLoginSubmit(e){
+          e.preventDefault();
+          const email = document.getElementById('loginEmail').value.trim();
+          const pass = document.getElementById('loginPass').value;
+          const errEl = document.getElementById('loginError');
+          const btn = document.getElementById('loginSubmitBtn');
+          errEl.classList.add('d-none');
+          btn.disabled = true;
+          btn.textContent = 'Signing in…';
+          try{
+            const cred = await authInstance.signInWithEmailAndPassword(email, pass);
+            resolve(cred.user);
+          }catch(err){
+            errEl.textContent = err && err.message ? err.message : "Sign-in failed. Check your email and password.";
+            errEl.classList.remove('d-none');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-unlock"></i> Sign in';
+          }
+        });
+      });
+    }
+    showApp();
+
+    function doLogout(){
+      authInstance.signOut().finally(() => location.reload());
+    }
+    const logoutDesktop = document.getElementById('logoutBtnDesktop');
+    const logoutMobile = document.getElementById('logoutBtnMobile');
+    if (logoutDesktop) logoutDesktop.addEventListener('click', doLogout);
+    if (logoutMobile) logoutMobile.addEventListener('click', doLogout);
+  } else {
+    // No Firebase Auth configured yet (or Firebase isn't set up at all) —
+    // don't lock the owner out; just show the app.
+    showApp();
+  }
+
   // Pull cloud data BEFORE any of the app's own state loads below, so a
   // newer copy from another phone wins over what's sitting in this browser.
   if (cloudSyncEnabled){
@@ -1666,6 +1899,7 @@
   let tripStartDate = loadJSON(LS_KEYS.startDate, "2026-11-13");
   let preShopList = loadJSON(LS_KEYS.preShop, []);
   let forOthersList = loadJSON(LS_KEYS.forOthers, []);
+  let visitLog = loadJSON(LS_KEYS.visitLog, []);
 
   /* ============================================================
      TRIP DATES — recompute every day's calendar date from a
@@ -2012,6 +2246,59 @@
   });
 
   /* ============================================================
+     VISIT LOG — which viewpoints you actually went to, which day,
+     and how you got there. Purely a log; not tied to expenses.
+  ============================================================ */
+  const visitDaySelect = document.getElementById('visitDaySelect');
+  visitDaySelect.innerHTML = expDayOptions;
+  const visitLogBody = document.getElementById('visitLogBody');
+  const visitLogEmpty = document.getElementById('visitLogEmpty');
+
+  function renderVisitLog(){
+    visitLogBody.innerHTML = "";
+    if (!visitLog.length){
+      visitLogEmpty.classList.remove('d-none');
+    } else {
+      visitLogEmpty.classList.add('d-none');
+    }
+    [...visitLog].sort((a,b) => b.id - a.id).forEach(v => {
+      const dayLabel = v.day && v.day !== "0" ? "Day " + v.day : "—";
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${dayLabel}</td>
+        <td>${v.place}</td>
+        <td><span class="tz-badge">${v.how}</span></td>
+        <td class="text-end"><button class="expense-row-del" title="Delete" data-visit-del="${v.id}"><i class="bi bi-x-circle"></i></button></td>
+      `;
+      visitLogBody.appendChild(tr);
+    });
+    visitLogBody.querySelectorAll('[data-visit-del]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = Number(btn.getAttribute('data-visit-del'));
+        visitLog = visitLog.filter(v => v.id !== id);
+        saveJSON(LS_KEYS.visitLog, visitLog);
+        renderVisitLog();
+      });
+    });
+  }
+
+  document.getElementById('visitAddBtn').addEventListener('click', () => {
+    const place = document.getElementById('visitPlaceInput').value.trim();
+    const how = document.getElementById('visitHowSelect').value;
+    const day = visitDaySelect.value;
+    if (!place) return;
+    visitLog.push({ id: Date.now(), place, how, day });
+    saveJSON(LS_KEYS.visitLog, visitLog);
+    document.getElementById('visitPlaceInput').value = "";
+    renderVisitLog();
+  });
+  document.getElementById('visitPlaceInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); document.getElementById('visitAddBtn').click(); }
+  });
+
+  renderVisitLog();
+
+  /* ============================================================
      RENDER: FOOD
   ============================================================ */
   const foodRow = document.getElementById('foodRow');
@@ -2094,10 +2381,11 @@
       shopEmpty.classList.add('d-none');
     }
     shopList.forEach(item => {
+      const hasPrice = item.price !== null && item.price !== undefined && item.price > 0;
       const row = document.createElement('div');
       row.className = "shop-item-row" + (item.bought ? " bought" : "");
       row.innerHTML = `
-        <input type="checkbox" data-shop-bought="${item.id}" ${item.bought ? "checked" : ""} title="Mark as bought">
+        <input type="checkbox" data-shop-bought="${item.id}" ${item.bought ? "checked" : ""} ${hasPrice ? "" : "disabled"} title="${hasPrice ? "Mark as bought" : "Enter a price first"}">
         <span class="shop-name">${item.name}</span>
         <input type="number" min="0" step="any" class="form-control form-control-sm dark-input shop-price-input" data-shop-price="${item.id}" placeholder="Price paid" value="${item.price !== null && item.price !== undefined ? item.price : ''}">
         <select class="form-select form-select-sm dark-input shop-currency-select" data-shop-currency="${item.id}">
@@ -2112,8 +2400,8 @@
   }
 
   function renderShopTotals(){
-    const totalINR = shopList.filter(i => i.currency === 'INR' && i.price).reduce((s,i) => s + Number(i.price), 0);
-    const totalBDT = shopList.filter(i => i.currency === 'BDT' && i.price).reduce((s,i) => s + Number(i.price), 0);
+    const totalINR = shopList.filter(i => i.currency === 'INR' && i.bought && i.price).reduce((s,i) => s + Number(i.price), 0);
+    const totalBDT = shopList.filter(i => i.currency === 'BDT' && i.bought && i.price).reduce((s,i) => s + Number(i.price), 0);
     document.getElementById('shopTotalINR').textContent = "₹" + fmtNum(totalINR);
     document.getElementById('shopTotalBDT').textContent = "৳" + fmtNum(totalBDT);
   }
@@ -2140,14 +2428,24 @@
     if (boughtCb){
       const id = Number(boughtCb.getAttribute('data-shop-bought'));
       const it = shopList.find(x => x.id === id);
-      if (it){ it.bought = boughtCb.checked; saveJSON(LS_KEYS.shopList, shopList); renderShopList(); refreshTotals(); }
+      if (it){
+        if (boughtCb.checked && (!it.price || it.price <= 0)){
+          alert("Enter a price for this item before marking it as bought.");
+          boughtCb.checked = false;
+          return;
+        }
+        it.bought = boughtCb.checked;
+        saveJSON(LS_KEYS.shopList, shopList);
+        renderShopList();
+        refreshTotals();
+      }
     }
     if (priceInput){
       const id = Number(priceInput.getAttribute('data-shop-price'));
       const it = shopList.find(x => x.id === id);
       if (it){
         it.price = priceInput.value === "" ? null : parseFloat(priceInput.value);
-        if (it.price !== null && it.price > 0) it.bought = true;
+        if (!it.price || it.price <= 0) it.bought = false; // losing the price re-locks the checkbox
         saveJSON(LS_KEYS.shopList, shopList);
         renderShopList();
         refreshTotals();
@@ -2402,10 +2700,11 @@
     }
     preShopList.forEach(item => {
       const symbol = item.currency === 'INR' ? '₹' : '৳';
+      const hasPrice = item.price !== null && item.price !== undefined && item.price > 0;
       const row = document.createElement('div');
       row.className = "shop-item-row" + (item.done ? " bought" : "");
       row.innerHTML = `
-        <input type="checkbox" data-preshop-done="${item.id}" ${item.done ? "checked" : ""}>
+        <input type="checkbox" data-preshop-done="${item.id}" ${item.done ? "checked" : ""} ${hasPrice ? "" : "disabled"} title="${hasPrice ? "Mark as done" : "Enter a price first"}">
         <span class="shop-name">${item.name}</span>
         <input type="number" min="0" step="any" class="form-control form-control-sm dark-input shop-price-input" data-preshop-price="${item.id}" placeholder="Price" value="${item.price !== null && item.price !== undefined ? item.price : ''}">
         <select class="form-select form-select-sm dark-input shop-currency-select" data-preshop-currency="${item.id}">
@@ -2458,13 +2757,23 @@
     if (doneCb){
       const id = Number(doneCb.getAttribute('data-preshop-done'));
       const item = preShopList.find(x => x.id === id);
-      if (item){ item.done = doneCb.checked; saveJSON(LS_KEYS.preShop, preShopList); renderPreShop(); }
+      if (item){
+        if (doneCb.checked && (!item.price || item.price <= 0)){
+          alert("Enter a price for this item before ticking it off.");
+          doneCb.checked = false;
+          return;
+        }
+        item.done = doneCb.checked;
+        saveJSON(LS_KEYS.preShop, preShopList);
+        renderPreShop();
+      }
     }
     if (priceInput){
       const id = Number(priceInput.getAttribute('data-preshop-price'));
       const item = preShopList.find(x => x.id === id);
       if (item){
         item.price = priceInput.value === "" ? null : parseFloat(priceInput.value);
+        if (!item.price || item.price <= 0) item.done = false; // losing the price re-locks the checkbox
         saveJSON(LS_KEYS.preShop, preShopList);
         renderPreShop();
       }
@@ -2513,7 +2822,7 @@
       byCategory[cat][currency] = (byCategory[cat][currency] || 0) + (Number(amount) || 0);
     }
     expenses.forEach(e => add(e.category, e.currency, e.amount));
-    shopList.forEach(i => { if (i.price) add('Shopping', i.currency, i.price); });
+    shopList.forEach(i => { if (i.bought && i.price) add('Shopping', i.currency, i.price); });
     let totalINR = 0, totalBDT = 0;
     Object.values(byCategory).forEach(v => { totalINR += v.INR; totalBDT += v.BDT; });
     return { byCategory, totalINR, totalBDT };
@@ -2622,10 +2931,13 @@
     foodEntries.forEach(exp => {
       const symbol = exp.currency === 'BDT' ? '৳' : '₹';
       const dayLabel = exp.day && exp.day !== "0" ? "Day " + exp.day : "—";
+      const reviewClass = exp.review === 'Good' ? 'bdt' : (exp.review === 'Bad' || exp.review === 'Very bad' ? '' : '');
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${dayLabel}</td>
         <td>${exp.desc}</td>
+        <td>${exp.place || "—"}</td>
+        <td>${exp.review ? `<span class="tz-badge ${exp.review === 'Good' ? 'bdt' : ''}">${exp.review}</span>` : "—"}</td>
         <td class="text-end fw-semibold" style="color:var(--marigold)">${symbol}${fmt(exp.amount)}</td>
         <td class="text-end"><button class="expense-row-del" title="Delete" data-food-del="${exp.id}"><i class="bi bi-x-circle"></i></button></td>
       `;
@@ -2638,13 +2950,16 @@
 
   document.getElementById('foodAddBtn').addEventListener('click', () => {
     const meal = document.getElementById('foodMealInput').value.trim();
+    const where = document.getElementById('foodWhereInput').value.trim();
+    const review = document.getElementById('foodReviewSelect').value;
     const price = parseFloat(document.getElementById('foodPriceInput').value);
     const currency = document.getElementById('foodCurrencySelect').value;
     const day = foodDaySelect.value;
     if (!meal || !price || price <= 0) return;
-    expenses.push({ id: Date.now(), desc: meal, amount: price, currency, category: 'Food', day });
+    expenses.push({ id: Date.now(), desc: meal, amount: price, currency, category: 'Food', day, place: where, review });
     saveJSON(LS_KEYS.expenses, expenses);
     document.getElementById('foodMealInput').value = "";
+    document.getElementById('foodWhereInput').value = "";
     document.getElementById('foodPriceInput').value = "";
     renderExpenses();
     renderFoodLog();
@@ -2728,6 +3043,240 @@
     saveJSON(LS_KEYS.startDate, tripStartDate);
     applyAllDates();
     updateCountdown();
+  });
+
+  /* ============================================================
+     PDF REPORT — builds a downloadable PDF from whichever
+     sections the checkboxes select, using jsPDF + autoTable
+     (client-side only).
+  ============================================================ */
+  const repBudgetCb = document.getElementById('repBudget');
+  const repBudgetSubWrap = document.getElementById('repBudgetSubOptions');
+  function syncBudgetSubOptions(){
+    const on = repBudgetCb.checked;
+    repBudgetSubWrap.style.opacity = on ? '1' : '.45';
+    document.getElementById('repBudgetFood').disabled = !on;
+    document.getElementById('repBudgetShopping').disabled = !on;
+  }
+  repBudgetCb.addEventListener('change', syncBudgetSubOptions);
+  syncBudgetSubOptions();
+
+  function pdfSymbol(currency){ return currency === 'BDT' ? 'Tk' : 'Rs.'; } // jsPDF's base fonts can't render ₹/৳ glyphs
+
+  // jsPDF's built-in fonts only support a Latin-1-ish character set. Anything
+  // outside that (em dashes, arrows, curly quotes) breaks the text shaping
+  // and renders as spaced-out garbage. Swap them for plain ASCII first.
+  function pdfSafe(text){
+    return String(text == null ? '' : text)
+      .replace(/[\u2012\u2013\u2014\u2015]/g, '-')
+      .replace(/\u2192/g, '->')
+      .replace(/\u2190/g, '<-')
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201C\u201D]/g, '"')
+      .replace(/\u2026/g, '...')
+      .replace(/[\u09F3\u20B9\u09F0]/g, ''); // stray currency glyphs, just in case
+  }
+
+  function sumByCurrency(items, priceKey, currencyKey, onlyIf){
+    const sums = {};
+    items.forEach(i => {
+      if (onlyIf && !onlyIf(i)) return;
+      const p = Number(i[priceKey]);
+      if (!p) return;
+      const c = i[currencyKey] || 'INR';
+      sums[c] = (sums[c] || 0) + p;
+    });
+    return sums;
+  }
+  function sumsToText(sums){
+    const keys = Object.keys(sums);
+    if (!keys.length) return pdfSymbol('INR') + ' 0';
+    return keys.map(c => pdfSymbol(c) + ' ' + fmt(sums[c])).join('  +  ');
+  }
+
+  document.getElementById('generateReportBtn').addEventListener('click', () => {
+    const statusEl = document.getElementById('reportStatusMsg');
+    if (typeof window.jspdf === 'undefined'){
+      statusEl.textContent = "PDF library didn't load — check your connection and try again.";
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    if (typeof doc.autoTable !== 'function'){
+      statusEl.textContent = "Table plugin didn't load — check your connection and try again.";
+      return;
+    }
+    const pageHeight = 285;
+    const pageWidth = 190;
+    let y = 20;
+    const tableTheme = {
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2, textColor: [30, 30, 30] },
+      headStyles: { fillColor: [223, 164, 59], textColor: [40, 30, 10], fontStyle: 'bold' },
+      margin: { left: 10, right: 10 }
+    };
+
+    function ensureSpace(needed){
+      if (y + needed > pageHeight){ doc.addPage(); y = 20; }
+    }
+    function heading(text){
+      ensureSpace(12);
+      doc.setFontSize(13); doc.setFont(undefined, 'bold');
+      doc.text(pdfSafe(text), 10, y); y += 6;
+      doc.setDrawColor(180); doc.line(10, y, 200, y); y += 6;
+      doc.setFont(undefined, 'normal'); doc.setFontSize(10);
+    }
+    function line(text, indent){
+      const x = indent || 10;
+      const wrapped = doc.splitTextToSize(pdfSafe(text), pageWidth - (x - 10));
+      wrapped.forEach(l => { ensureSpace(6); doc.text(l, x, y); y += 5.2; });
+    }
+    function table(head, body, opts){
+      doc.autoTable(Object.assign({ startY: y, head: [head], body: body.map(r => r.map(pdfSafe)) }, tableTheme, opts || {}));
+      y = doc.lastAutoTable.finalY + 6;
+    }
+    function subtotalLine(label, sumsText){
+      doc.setFont(undefined, 'bold');
+      line(`${label}: ${sumsText}`);
+      doc.setFont(undefined, 'normal');
+      y += 2;
+    }
+
+    // Title
+    doc.setFontSize(18); doc.setFont(undefined, 'bold');
+    doc.text('Sikkim & Darjeeling Trip Report', 10, y); y += 8;
+    doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.setTextColor(120);
+    doc.text(pdfSafe('Generated ' + new Date().toLocaleDateString()), 10, y); y += 10;
+    doc.setTextColor(0); doc.setFontSize(10);
+
+    if (document.getElementById('repDays').checked){
+      heading('Day-by-day itinerary & notes');
+      DAYS.forEach(day => {
+        ensureSpace(14);
+        doc.setFont(undefined, 'bold'); doc.setFontSize(11);
+        doc.text(pdfSafe(`Day ${day.n} - ${day.date} - ${day.focus}`), 10, y); y += 6;
+        doc.setFont(undefined, 'normal'); doc.setFontSize(10);
+
+        const rows = day.steps.map((s, si) => {
+          const start = actualTimes[`${day.n}_${si}_start`];
+          const end = actualTimes[`${day.n}_${si}_end`];
+          const actualStr = (start || end) ? `${start || '?'} - ${end || '?'}` : '-';
+          return [s[0], s[1], actualStr];
+        });
+        table(['Suggested time', 'Description', 'Actual time'], rows, {
+          columnStyles: { 0: { cellWidth: 32 }, 2: { cellWidth: 28 } }
+        });
+
+        if (notesData[day.n]) line('Notes: ' + notesData[day.n]);
+        const changes = planChanges[day.n] || [];
+        changes.forEach(c => {
+          let t = 'Plan change: ' + c.text;
+          if (c.start || c.end) t += ` (${c.start || '?'} - ${c.end || '?'} ${c.tz || ''})`;
+          line(t);
+        });
+        y += 3;
+      });
+    }
+
+    if (document.getElementById('repPlaces').checked){
+      heading('Places visited');
+      if (!visitLog.length){
+        line('Nothing logged yet.');
+      } else {
+        const rows = [...visitLog].sort((a, b) => Number(a.day) - Number(b.day))
+          .map(v => [v.day ? `Day ${v.day}` : '-', v.place, v.how]);
+        table(['Day', 'Viewpoint', 'How'], rows);
+      }
+    }
+
+    if (document.getElementById('repFood').checked){
+      heading('Food log');
+      const foodEntries = expenses.filter(e => e.category === 'Food').sort((a, b) => Number(a.day) - Number(b.day));
+      if (!foodEntries.length){
+        line('Nothing logged yet.');
+      } else {
+        const rows = foodEntries.map(e => [e.day ? `Day ${e.day}` : '-', e.desc, e.place || '-', e.review || '-', pdfSymbol(e.currency) + ' ' + fmt(e.amount)]);
+        table(['Day', 'Meal', 'Where', 'Review', 'Price'], rows);
+        subtotalLine('Food total', sumsToText(sumByCurrency(foodEntries, 'amount', 'currency')));
+      }
+    }
+
+    if (document.getElementById('repShopping').checked){
+      heading('Shopping list');
+      if (!shopList.length){
+        line('Nothing logged yet.');
+      } else {
+        const rows = shopList.map(item => [item.name, item.bought ? 'Bought' : 'Not yet', item.price ? pdfSymbol(item.currency) + ' ' + fmt(item.price) : '-']);
+        table(['Item', 'Status', 'Price'], rows);
+        subtotalLine('Shopping total (bought)', sumsToText(sumByCurrency(shopList, 'price', 'currency', i => i.bought)));
+      }
+
+      heading('Requests - bring from India');
+      if (!forOthersList.length){
+        line('Nothing logged yet.');
+      } else {
+        const rows = forOthersList.map(item => [item.name, item.forWhom || 'someone', item.bought ? 'Bought' : 'Pending', item.price ? pdfSymbol(item.currency) + ' ' + fmt(item.price) : '-']);
+        table(['Item', 'For', 'Status', 'Price'], rows);
+        subtotalLine('Requests total (bought)', sumsToText(sumByCurrency(forOthersList, 'price', 'currency', i => i.bought)));
+      }
+    }
+
+    if (document.getElementById('repChecklists').checked){
+      heading('Packing & documents');
+      table(['Status', 'Item'],
+        PACK_ITEMS.map((text, i) => [packData[i] ? 'Done' : 'Pending', text.replace(/<[^>]*>/g, '')]),
+        { columnStyles: { 0: { cellWidth: 22 } } }
+      );
+
+      heading('Important things - permits & rules');
+      table(['Status', 'Item'],
+        IMPORTANT_ITEMS.map((text, i) => [importantData[i] ? 'Done' : 'Pending', text.replace(/<[^>]*>/g, '')]),
+        { columnStyles: { 0: { cellWidth: 22 } } }
+      );
+
+      heading('Pre-trip shopping checklist');
+      if (!preShopList.length){
+        line('Nothing logged yet.');
+      } else {
+        const rows = preShopList.map(item => [item.done ? 'Done' : 'Pending', item.name, item.price ? pdfSymbol(item.currency) + ' ' + fmt(item.price) : '-']);
+        table(['Status', 'Item', 'Price'], rows, { columnStyles: { 0: { cellWidth: 22 } } });
+        subtotalLine('Pre-trip shopping total', sumsToText(sumByCurrency(preShopList, 'price', 'currency')));
+      }
+    }
+
+    if (document.getElementById('repBudget').checked){
+      const includeFood = document.getElementById('repBudgetFood').checked;
+      const includeShopping = document.getElementById('repBudgetShopping').checked;
+      heading('Budget summary');
+      const spend = computeSpend();
+      let totalINR = 0, totalBDT = 0;
+      const rows = [];
+      CATEGORY_ORDER.forEach(cat => {
+        if (cat === 'Food' && !includeFood) return;
+        if (cat === 'Shopping' && !includeShopping) return;
+        const v = spend.byCategory[cat] || { INR: 0, BDT: 0 };
+        if (!v.INR && !v.BDT) return;
+        totalINR += v.INR; totalBDT += v.BDT;
+        rows.push([cat, 'Rs. ' + fmt(v.INR), 'Tk ' + fmt(v.BDT)]);
+      });
+      if (!rows.length){
+        line('Nothing logged yet.');
+      } else {
+        table(['Category', 'INR', 'BDT'], rows, {
+          foot: [['Total', 'Rs. ' + fmt(totalINR), 'Tk ' + fmt(totalBDT)]],
+          footStyles: { fillColor: [235, 235, 230], textColor: [0, 0, 0], fontStyle: 'bold' }
+        });
+      }
+      if (!includeFood || !includeShopping){
+        doc.setFontSize(8); doc.setTextColor(140);
+        line('(Excludes: ' + [!includeFood ? 'food' : null, !includeShopping ? 'shopping' : null].filter(Boolean).join(', ') + ')');
+        doc.setFontSize(10); doc.setTextColor(0);
+      }
+    }
+
+    doc.save('sikkim-darjeeling-trip-report.pdf');
+    statusEl.textContent = 'Downloaded.';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
   });
 
   /* ============================================================
