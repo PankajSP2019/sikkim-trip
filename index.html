@@ -132,14 +132,29 @@
   @media (max-width: 480px){ .sync-pill{ font-size:.62rem; padding:.15rem .45rem; } }
   .navbar-trip .nav-link{
     color: var(--cream-dim) !important;
-    font-size: .92rem;
+    font-size: .82rem;
     font-weight: 500;
-    padding: .5rem .8rem !important;
+    padding: .45rem .55rem !important;
     border-radius: 8px;
+    white-space: nowrap;
   }
+  .navbar-trip .nav-link i{ margin-right: .15rem; }
   .navbar-trip .nav-link.active, .navbar-trip .nav-link:hover{
     color: var(--night) !important;
     background: var(--marigold);
+  }
+  #navLinksDesktop{
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+    gap: .1rem;
+  }
+  #navLinksDesktop::-webkit-scrollbar{ display:none; }
+  #navLinksDesktop .nav-item{ flex: 0 0 auto; }
+  #logoutBtnDesktop{ font-size:.78rem; padding:.3rem .6rem; white-space:nowrap; }
+  @media (min-width: 992px) and (max-width: 1199px){
+    .navbar-trip .navbar-brand .brand-text{ display:none; } /* keep just the dot on tighter desktop widths */
+    .navbar-trip .nav-link{ font-size:.76rem; padding:.4rem .45rem !important; }
   }
   .navbar-toggler{ border-color: var(--line); }
   .navbar-toggler-icon{
@@ -624,7 +639,7 @@
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar navbar-expand-lg navbar-trip fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#" data-tab-link="trip"><span class="flag-dot"></span>Sikkim &amp; Darjeeling</a>
+    <a class="navbar-brand" href="#" data-tab-link="trip"><span class="flag-dot"></span><span class="brand-text">Sikkim &amp; Darjeeling</span></a>
     <span class="sync-pill d-none" id="syncStatusPill"><i class="bi bi-cloud"></i> <span id="syncStatusText">—</span></span>
     <button class="navbar-toggler" type="button" id="navTogglerBtn" aria-controls="navOffcanvas" aria-label="Open menu">
       <span class="navbar-toggler-icon"></span>
@@ -632,13 +647,13 @@
     <div class="collapse navbar-collapse d-none d-lg-flex">
       <ul class="navbar-nav ms-auto flex-nowrap align-items-lg-center" id="navLinksDesktop">
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i> Overview</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="days"><i class="bi bi-calendar3"></i> Day-by-Day</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="days"><i class="bi bi-calendar3"></i> Days</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i> Food</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i> Budget</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="requests"><i class="bi bi-people"></i> Requests</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Checklists</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Lists</a></li>
         <li class="nav-item ms-lg-2"><button class="btn btn-sm btn-outline-trip" id="logoutBtnDesktop"><i class="bi bi-box-arrow-right"></i> Log out</button></li>
       </ul>
     </div>
@@ -675,6 +690,7 @@
       <a class="subnav-chip" href="#crossing"><i class="bi bi-signpost-2"></i>Border Crossing</a>
       <a class="subnav-chip" href="#report"><i class="bi bi-file-earmark-pdf"></i>Download Report</a>
       <a class="subnav-chip" href="#tips"><i class="bi bi-lightbulb"></i>Quick Tips</a>
+      <a class="subnav-chip" href="#activityLog"><i class="bi bi-clock-history"></i>Activity Log</a>
     </div>
     <div class="row align-items-center g-4">
       <div class="col-lg-7">
@@ -1408,7 +1424,7 @@
 </section>
 
 <!-- ================= TIPS ================= -->
-<section id="tips" data-tab="trip" style="border-bottom:none;">
+<section id="tips" data-tab="trip">
   <div class="container">
     <div class="section-head">
       <div class="kicker">Section 10</div>
@@ -1422,6 +1438,33 @@
       <input type="file" id="importFileInput" accept="application/json,.json" class="d-none">
       <button class="btn btn-outline-trip" id="resetAllBtn"><i class="bi bi-arrow-counterclockwise"></i> Reset everything</button>
       <p class="small mt-3 mb-0" style="color:var(--cream-dim);">If your browser's storage ever gets cleared, importing a previously exported .json file restores your notes, checklists, times and expenses.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ACTIVITY LOG ================= -->
+<section id="activityLog" data-tab="trip" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Audit trail</div>
+      <h2>Who changed what</h2>
+      <p>A running log of edits made to this trip. Most useful once more than one person has access. Kept to the most recent 200 changes.</p>
+    </div>
+
+    <div class="card card-trip mb-3">
+      <div class="card-body py-3">
+        <span class="small" style="color:var(--cream-dim);">Last edited by</span>
+        <div class="h6 mb-0 mt-1" id="lastEditedInfo" style="color:var(--marigold);">—</div>
+      </div>
+    </div>
+
+    <p class="small mb-2" style="color:var(--cream-dim);">Tap a name to see that person's changes.</p>
+    <div id="activityUserButtons" class="d-flex flex-wrap gap-2 mb-2"></div>
+    <div id="activityUserDetails"></div>
+
+    <div class="empty-state d-none" id="activityLogEmpty">
+      <i class="bi bi-clock-history d-block mb-2"></i>
+      No activity recorded yet.
     </div>
   </div>
 </section>
@@ -1840,7 +1883,8 @@
     startDate: "sikkim_trip_startdate_v1",
     preShop: "sikkim_trip_preshop_v1",
     forOthers: "sikkim_trip_forothers_v1",
-    visitLog: "sikkim_trip_visitlog_v1"
+    visitLog: "sikkim_trip_visitlog_v1",
+    activityLog: "sikkim_trip_activitylog_v1"
   };
 
   function loadJSON(key, fallback){
@@ -1849,6 +1893,78 @@
       return raw ? JSON.parse(raw) : fallback;
     }catch(e){ return fallback; }
   }
+
+  // Declared early (before Firebase Auth below) since sign-in can log an
+  // activity entry during initial page load, before the rest of the app's
+  // state normally loads.
+  let activityLog = loadJSON(LS_KEYS.activityLog, []);
+  const lastEditedInfo = document.getElementById('lastEditedInfo');
+  const activityUserButtons = document.getElementById('activityUserButtons');
+  const activityUserDetails = document.getElementById('activityUserDetails');
+  const activityLogEmpty = document.getElementById('activityLogEmpty');
+
+  function timeAgo(ts){
+    const mins = Math.floor((Date.now() - ts) / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + ' min ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + ' hr ago';
+    const days = Math.floor(hrs / 24);
+    return days + (days === 1 ? ' day ago' : ' days ago');
+  }
+
+  function renderActivityLog(){
+    if (!lastEditedInfo) return;
+
+    if (!activityLog.length){
+      lastEditedInfo.textContent = 'No edits yet.';
+      activityUserButtons.innerHTML = '';
+      activityUserDetails.innerHTML = '';
+      activityLogEmpty.classList.remove('d-none');
+      return;
+    }
+    activityLogEmpty.classList.add('d-none');
+
+    const sorted = [...activityLog].sort((a, b) => b.ts - a.ts);
+    const last = sorted[0];
+    lastEditedInfo.innerHTML = `${last.email} <span class="small" style="color:var(--cream-dim); font-weight:400;">— ${new Date(last.ts).toLocaleString()} (${timeAgo(last.ts)}) — ${last.field}</span>`;
+
+    const byUser = {};
+    sorted.forEach(e => { (byUser[e.email] = byUser[e.email] || []).push(e); });
+
+    activityUserButtons.innerHTML = '';
+    activityUserDetails.innerHTML = '';
+    Object.keys(byUser).forEach((email, idx) => {
+      const entries = byUser[email];
+      const panelId = 'actuser-panel-' + idx;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-sm btn-outline-trip';
+      btn.innerHTML = `<i class="bi bi-person-circle"></i> ${email} <span class="badge-optional" style="margin-left:.35rem;">${entries.length}</span>`;
+      btn.addEventListener('click', () => {
+        document.getElementById(panelId).classList.toggle('d-none');
+      });
+      activityUserButtons.appendChild(btn);
+
+      const rows = entries.map(e => `<tr><td>${new Date(e.ts).toLocaleString()}</td><td>${e.field}</td></tr>`).join('');
+      const panel = document.createElement('div');
+      panel.id = panelId;
+      panel.className = 'card card-trip mt-2 mb-1 d-none';
+      panel.innerHTML = `
+        <div class="card-body">
+          <div class="table-responsive table-responsive-trip">
+            <table class="table table-trip mb-0">
+              <thead><tr><th>When</th><th>What changed</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+      activityUserDetails.appendChild(panel);
+    });
+  }
+  renderActivityLog();
 
   /* ============================================================
      CLOUD SYNC (Firebase Firestore) — optional. Lets your notes,
@@ -1877,6 +1993,7 @@
   let cloudSyncEnabled = false;
   let authInstance = null;
   let cloudPushTimer = null;
+  let currentUserEmail = null;
 
   function bumpLocalTimestamp(){
     try{ localStorage.setItem(LOCAL_TS_KEY, String(Date.now())); }catch(e){ /* storage unavailable */ }
@@ -1910,9 +2027,37 @@
       .catch((e) => { console.warn('Cloud push failed:', e); showSyncStatus('error'); });
   }
 
+  const FIELD_LABELS = {
+    [LS_KEYS.notes]: 'Day notes',
+    [LS_KEYS.pack]: 'Packing checklist',
+    [LS_KEYS.important]: 'Important things checklist',
+    [LS_KEYS.expenses]: 'Expenses / food log',
+    [LS_KEYS.fx]: 'BDT-INR rate',
+    [LS_KEYS.planChanges]: 'Plan changes',
+    [LS_KEYS.shopList]: 'Shopping list',
+    [LS_KEYS.actualTimes]: 'Actual times',
+    [LS_KEYS.startDate]: 'Trip start date',
+    [LS_KEYS.preShop]: 'Pre-trip shopping checklist',
+    [LS_KEYS.forOthers]: 'Requests (bring from India)',
+    [LS_KEYS.visitLog]: 'Visited places log'
+  };
+
+  function logCustomActivity(text){
+    activityLog.push({ ts: Date.now(), email: currentUserEmail || 'Not signed in', field: text });
+    if (activityLog.length > 200) activityLog = activityLog.slice(-200);
+    try{ localStorage.setItem(LS_KEYS.activityLog, JSON.stringify(activityLog)); }catch(e){ /* storage unavailable */ }
+    if (typeof renderActivityLog === 'function') renderActivityLog();
+  }
+
+  function logActivity(changedKey){
+    if (changedKey === LS_KEYS.activityLog) return; // never log writes to the log itself
+    logCustomActivity(FIELD_LABELS[changedKey] || changedKey);
+  }
+
   function saveJSON(key, val){
     try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){ /* storage unavailable */ }
     bumpLocalTimestamp();
+    logActivity(key);
     if (cloudSyncEnabled){
       clearTimeout(cloudPushTimer);
       cloudPushTimer = setTimeout(pushAllToCloud, 900);
@@ -1951,6 +2096,7 @@
       const unsub = authInstance.onAuthStateChanged((u) => { unsub(); resolve(u); });
     });
 
+    let freshSignIn = false;
     if (!currentUser){
       showGate();
       currentUser = await new Promise((resolve) => {
@@ -1965,6 +2111,7 @@
           btn.textContent = 'Signing in…';
           try{
             const cred = await authInstance.signInWithEmailAndPassword(email, pass);
+            freshSignIn = true;
             resolve(cred.user);
           }catch(err){
             errEl.textContent = err && err.message ? err.message : "Sign-in failed. Check your email and password.";
@@ -1976,6 +2123,8 @@
       });
     }
     showApp();
+    currentUserEmail = currentUser ? currentUser.email : null;
+    if (freshSignIn && currentUserEmail) logCustomActivity('Signed in');
 
     function doLogout(){
       authInstance.signOut().finally(() => location.reload());
@@ -3440,9 +3589,43 @@
   });
 
   document.getElementById('resetAllBtn').addEventListener('click', () => {
-    if (confirm("Reset all notes, checklists, dates and expenses on this device? Export first if you want a backup.")){
-      Object.values(LS_KEYS).forEach(k => localStorage.removeItem(k));
-      location.reload();
+    const cloudNote = cloudSyncEnabled ? " This also clears the cloud copy, so every device sees the reset." : "";
+    if (confirm("Reset all notes, checklists, dates and expenses?" + cloudNote + " Export first if you want a backup.")){
+      // Write explicit "empty" values (not just remove the keys) so that if
+      // this pushes to the cloud, other devices are told to clear these
+      // fields too — an absent key in the cloud doc is otherwise ignored,
+      // not treated as "clear this."
+      const defaults = {
+        [LS_KEYS.notes]: {},
+        [LS_KEYS.pack]: {},
+        [LS_KEYS.important]: {},
+        [LS_KEYS.expenses]: [],
+        [LS_KEYS.fx]: "",
+        [LS_KEYS.planChanges]: {},
+        [LS_KEYS.shopList]: [],
+        [LS_KEYS.actualTimes]: {},
+        [LS_KEYS.startDate]: "2026-11-13",
+        [LS_KEYS.preShop]: [],
+        [LS_KEYS.forOthers]: [],
+        [LS_KEYS.visitLog]: []
+      };
+      Object.entries(defaults).forEach(([k, v]) => {
+        try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ /* storage unavailable */ }
+      });
+      bumpLocalTimestamp();
+      logCustomActivity('Reset everything'); // the activity log itself is deliberately NOT cleared by a reset
+
+      if (cloudSyncEnabled && db){
+        const payload = {};
+        Object.entries(defaults).forEach(([k, v]) => { payload[k] = JSON.stringify(v); });
+        payload[LS_KEYS.activityLog] = localStorage.getItem(LS_KEYS.activityLog);
+        payload._updatedAt = Date.now();
+        db.doc(FIRESTORE_DOC_PATH).set(payload)
+          .catch(e => console.warn('Reset: cloud push failed, this device is still reset locally:', e))
+          .finally(() => location.reload());
+      } else {
+        location.reload();
+      }
     }
   });
 
@@ -3473,23 +3656,45 @@
         e.target.value = "";
         return;
       }
-      if (!confirm("This will overwrite your current notes, checklists, times, dates and expenses on this device with the imported file. Continue?")){
+      const cloudNote = cloudSyncEnabled ? " This also updates the cloud copy, so every device picks up the import." : "";
+      if (!confirm("This will overwrite your current notes, checklists, times, dates and expenses on this device with the imported file." + cloudNote + " Continue?")){
         e.target.value = "";
         return;
       }
-      if (data.notes) saveJSON(LS_KEYS.notes, data.notes);
-      if (data.packingChecklist) saveJSON(LS_KEYS.pack, data.packingChecklist);
-      if (data.importantChecklist) saveJSON(LS_KEYS.important, data.importantChecklist);
-      if (data.expenses) saveJSON(LS_KEYS.expenses, data.expenses);
-      if (data.fxRate !== undefined) saveJSON(LS_KEYS.fx, data.fxRate);
-      if (data.planChanges) saveJSON(LS_KEYS.planChanges, data.planChanges);
-      if (data.shoppingList) saveJSON(LS_KEYS.shopList, data.shoppingList);
-      if (data.actualTimes) saveJSON(LS_KEYS.actualTimes, data.actualTimes);
-      if (data.tripStartDate) saveJSON(LS_KEYS.startDate, data.tripStartDate);
-      if (data.preShopList) saveJSON(LS_KEYS.preShop, data.preShopList);
-      if (data.forOthersList) saveJSON(LS_KEYS.forOthers, data.forOthersList);
-      alert("Import complete — reloading the page now.");
-      location.reload();
+      // Write everything to localStorage directly (not via saveJSON's
+      // debounced push) so we can push once, immediately, and reload only
+      // after that push actually completes — a reload right after saveJSON
+      // could otherwise cut the debounce timer off before it fires.
+      const fieldMap = [
+        ['notes', LS_KEYS.notes], ['packingChecklist', LS_KEYS.pack], ['importantChecklist', LS_KEYS.important],
+        ['expenses', LS_KEYS.expenses], ['planChanges', LS_KEYS.planChanges], ['shoppingList', LS_KEYS.shopList],
+        ['actualTimes', LS_KEYS.actualTimes], ['tripStartDate', LS_KEYS.startDate],
+        ['preShopList', LS_KEYS.preShop], ['forOthersList', LS_KEYS.forOthers]
+      ];
+      fieldMap.forEach(([srcKey, lsKey]) => {
+        if (data[srcKey] !== undefined) localStorage.setItem(lsKey, JSON.stringify(data[srcKey]));
+      });
+      if (data.fxRate !== undefined) localStorage.setItem(LS_KEYS.fx, JSON.stringify(data.fxRate));
+      bumpLocalTimestamp();
+      logCustomActivity('Imported a backup file');
+
+      const finishUp = () => {
+        alert("Import complete — reloading the page now.");
+        location.reload();
+      };
+      if (cloudSyncEnabled && db){
+        const payload = {};
+        Object.values(LS_KEYS).forEach(k => {
+          const v = localStorage.getItem(k);
+          if (v !== null) payload[k] = v;
+        });
+        payload._updatedAt = Date.now();
+        db.doc(FIRESTORE_DOC_PATH).set(payload)
+          .catch(e => console.warn('Import: cloud push failed, this device still has the import locally:', e))
+          .finally(finishUp);
+      } else {
+        finishUp();
+      }
     };
     reader.onerror = () => alert("Couldn't read that file — please try again.");
     reader.readAsText(file);
