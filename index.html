@@ -1075,6 +1075,48 @@
 
     <div class="card card-trip mb-4">
       <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+          <div>
+            <h3 class="h6 display-font mb-1"><i class="bi bi-currency-exchange" style="color:var(--marigold);"></i> Live currency converter</h3>
+            <p class="small mb-0" style="color:var(--cream-dim);">Compare a price across BDT, INR and USD using live exchange rates — e.g. see a Rs. 900 bottle in BDT before you buy.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-trip" id="refreshRatesBtn" type="button"><i class="bi bi-arrow-clockwise"></i> Refresh rates</button>
+        </div>
+        <div class="row g-2 align-items-end mb-2">
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Amount</label>
+            <input type="number" min="0" step="any" class="form-control form-control-sm dark-input" id="liveConvAmount" value="1">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">From</label>
+            <select class="form-select form-select-sm dark-input" id="liveConvFrom">
+              <option value="INR">INR (₹)</option>
+              <option value="BDT">BDT (৳)</option>
+              <option value="USD">USD ($)</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-1 text-center d-none d-md-block">
+            <i class="bi bi-arrow-right" style="color:var(--marigold); font-size:1.1rem;"></i>
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">To</label>
+            <select class="form-select form-select-sm dark-input" id="liveConvTo">
+              <option value="BDT">BDT (৳)</option>
+              <option value="INR">INR (₹)</option>
+              <option value="USD">USD ($)</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-2">
+            <label class="form-label small mb-1" style="color:var(--cream-dim);">Result</label>
+            <div class="form-control form-control-sm dark-input" id="liveConvResult" style="font-weight:700; color:var(--marigold);">—</div>
+          </div>
+        </div>
+        <div class="small" style="color:var(--cream-dim);" id="liveRatesStatus">Loading live rates…</div>
+      </div>
+    </div>
+
+    <div class="card card-trip mb-4">
+      <div class="card-body">
         <h3 class="h6 display-font mb-1"><i class="bi bi-pie-chart" style="color:var(--marigold);"></i> Everything, by category</h3>
         <p class="small mb-3" style="color:var(--cream-dim);">Pulls together your logged expenses, food log and shopping list purchases in one place — travel, stay, food and shopping, all categorized, so you don't have to add it up from different sections yourself.</p>
         <div class="table-responsive table-responsive-trip">
@@ -1481,6 +1523,95 @@
     showTab(initialTab);
 
     window.__showTab = showTab; // exposed in case other code needs to switch tabs
+  })();
+
+  /* ============================================================
+     LIVE CURRENCY CONVERTER — BDT / INR / USD via a free public
+     exchange-rate API. Fully independent of the manual BDT<->INR
+     box above it — doesn't touch it, doesn't feed the budget totals.
+  ============================================================ */
+  (function setupLiveConverter(){
+    const CACHE_KEY = 'sikkim_trip_liverates_v1';
+    const CACHE_MAX_AGE = 12 * 60 * 60 * 1000; // 12 hours
+    let liveRates = null; // { INR, BDT, fetchedAt }
+
+    const amountEl = document.getElementById('liveConvAmount');
+    const fromEl = document.getElementById('liveConvFrom');
+    const toEl = document.getElementById('liveConvTo');
+    const resultEl = document.getElementById('liveConvResult');
+    const statusEl = document.getElementById('liveRatesStatus');
+    const refreshBtn = document.getElementById('refreshRatesBtn');
+    if (!amountEl || !fromEl || !toEl || !resultEl || !statusEl || !refreshBtn) return;
+
+    function loadCache(){
+      try{
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (Date.now() - parsed.fetchedAt < CACHE_MAX_AGE) return parsed;
+        return null;
+      }catch(e){ return null; }
+    }
+    function saveCache(rates){
+      try{ localStorage.setItem(CACHE_KEY, JSON.stringify(rates)); }catch(e){ /* storage unavailable */ }
+    }
+
+    function updateStatus(){
+      if (!liveRates){ statusEl.textContent = "Rates unavailable — check your connection."; return; }
+      const t = new Date(liveRates.fetchedAt);
+      statusEl.textContent = 'Rates as of ' + t.toLocaleString() + ' — 1 USD = ' + liveRates.INR.toFixed(2) + ' INR = ' + liveRates.BDT.toFixed(2) + ' BDT';
+    }
+
+    function convert(amount, from, to){
+      if (!liveRates) return null;
+      const rateMap = { USD: 1, INR: liveRates.INR, BDT: liveRates.BDT };
+      if (!rateMap[from] || !rateMap[to]) return null;
+      const usd = amount / rateMap[from];
+      return usd * rateMap[to];
+    }
+
+    function recompute(){
+      const amount = parseFloat(amountEl.value);
+      if (!amount || amount <= 0 || !liveRates){
+        resultEl.textContent = '—';
+        return;
+      }
+      const result = convert(amount, fromEl.value, toEl.value);
+      resultEl.textContent = result === null ? '—' : result.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    }
+
+    async function fetchLiveRates(force){
+      if (!force){
+        const cached = loadCache();
+        if (cached){ liveRates = cached; updateStatus(); recompute(); return; }
+      }
+      statusEl.textContent = 'Fetching live rates…';
+      try{
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        const data = await res.json();
+        if (data && data.result === 'success' && data.rates && data.rates.INR && data.rates.BDT){
+          liveRates = { INR: data.rates.INR, BDT: data.rates.BDT, fetchedAt: Date.now() };
+          saveCache(liveRates);
+        } else {
+          throw new Error('Unexpected response shape');
+        }
+      }catch(e){
+        console.warn('Live rate fetch failed:', e);
+        if (!liveRates){
+          statusEl.textContent = "Couldn't fetch live rates — check your connection and try Refresh.";
+          return;
+        }
+      }
+      updateStatus();
+      recompute();
+    }
+
+    amountEl.addEventListener('input', recompute);
+    fromEl.addEventListener('change', recompute);
+    toEl.addEventListener('change', recompute);
+    refreshBtn.addEventListener('click', () => fetchLiveRates(true));
+
+    fetchLiveRates(false);
   })();
 
   /* ============================================================
