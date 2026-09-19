@@ -132,29 +132,41 @@
   @media (max-width: 480px){ .sync-pill{ font-size:.62rem; padding:.15rem .45rem; } }
   .navbar-trip .nav-link{
     color: var(--cream-dim) !important;
-    font-size: .82rem;
+    font-size: .88rem;
     font-weight: 500;
-    padding: .45rem .55rem !important;
+    padding: .5rem .7rem !important;
     border-radius: 8px;
     white-space: nowrap;
   }
-  .navbar-trip .nav-link i{ margin-right: .15rem; }
+  .navbar-trip .nav-link i{ margin-right: .2rem; }
   .navbar-trip .nav-link.active, .navbar-trip .nav-link:hover{
     color: var(--night) !important;
     background: var(--marigold);
   }
-  #navLinksDesktop{
-    overflow-x: auto;
-    flex-wrap: nowrap !important;
-    scrollbar-width: none;
-    gap: .1rem;
-  }
-  #navLinksDesktop::-webkit-scrollbar{ display:none; }
+  #navLinksDesktop{ gap: .15rem; flex-wrap: nowrap; }
   #navLinksDesktop .nav-item{ flex: 0 0 auto; }
   #logoutBtnDesktop{ font-size:.78rem; padding:.3rem .6rem; white-space:nowrap; }
-  @media (min-width: 992px) and (max-width: 1199px){
+  .dropdown-menu-trip{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .4rem;
+    min-width: 220px;
+  }
+  .dropdown-menu-trip .dropdown-item{
+    color: var(--cream-dim);
+    font-size: .88rem;
+    border-radius: 6px;
+    padding: .5rem .7rem;
+  }
+  .dropdown-menu-trip .dropdown-item i{ margin-right: .4rem; color: var(--marigold); }
+  .dropdown-menu-trip .dropdown-item:hover, .dropdown-menu-trip .dropdown-item.active{
+    background: var(--marigold); color: var(--night);
+  }
+  .dropdown-menu-trip .dropdown-item.active i{ color: var(--night); }
+  @media (min-width: 992px) and (max-width: 1200px){
     .navbar-trip .navbar-brand .brand-text{ display:none; } /* keep just the dot on tighter desktop widths */
-    .navbar-trip .nav-link{ font-size:.76rem; padding:.4rem .45rem !important; }
+    .navbar-trip .nav-link{ font-size:.8rem; padding:.45rem .5rem !important; }
   }
   .navbar-toggler{ border-color: var(--line); }
   .navbar-toggler-icon{
@@ -224,11 +236,11 @@
 
   /* Each tab's FIRST section needs to clear the fixed navbar — the hero already
      handles this with its own inline style; these are the other tabs' openers. */
-  #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary{
+  #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary, #myPlanSection{
     padding-top: 5.5rem;
   }
   @media (max-width: 767px){
-    #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary{
+    #budget, #shopping, #requests, #stay, #food, #checklists, #itinerary, #myPlanSection{
       padding-top: 4.6rem;
     }
   }
@@ -321,7 +333,7 @@
   }
   .day-nav-scroll::-webkit-scrollbar{ height:6px; }
   .day-nav-scroll::-webkit-scrollbar-thumb{ background: var(--panel-2); border-radius:6px; }
-  .day-jump{
+  .day-jump, .myplan-jump{
     flex: 0 0 auto;
     background: var(--panel);
     border: 1px solid var(--line);
@@ -332,16 +344,16 @@
     font-weight:600;
     white-space:nowrap;
   }
-  .day-jump:hover, .day-jump.active{ background: var(--marigold); color: var(--night); border-color: var(--marigold); }
+  .day-jump:hover, .day-jump.active, .myplan-jump:hover, .myplan-jump.active{ background: var(--marigold); color: var(--night); border-color: var(--marigold); }
 
-  .day-panel{
+  .day-panel, .myplan-panel{
     display:none;
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     overflow:hidden;
   }
-  .day-panel.panel-visible{ display:block; }
+  .day-panel.panel-visible, .myplan-panel.panel-visible{ display:block; }
   .day-panel-header{
     background: var(--panel-2);
     color: var(--marigold);
@@ -374,6 +386,17 @@
   }
   .day-timeline .step .tm{ font-weight:700; color: var(--marigold); font-size:.83rem; }
   .day-timeline .step .tx{ font-size:.92rem; color: var(--cream); line-height:1.5; }
+
+  .myplan-form-box{
+    background: var(--night-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    height: 100%;
+  }
+  @media (max-width: 991px){
+    .myplan-form-box{ margin-bottom: 1.25rem; }
+  }
   .actual-time-wrap{ flex:0 0 auto; display:flex; gap:.55rem; align-items:flex-end; }
   .actual-time-group{ display:flex; flex-direction:column; gap:.2rem; }
   .actual-time-group .atg-label{
@@ -481,6 +504,10 @@
     border-color: var(--line); color: var(--cream-dim);
   }
   .btn-outline-trip:hover{ background: var(--panel-2); color: var(--cream); border-color: var(--line); }
+  .btn-outline-danger-trip{
+    border-color: rgba(193,73,63,0.55); color: #e5897e; background: transparent; font-weight:600;
+  }
+  .btn-outline-danger-trip:hover{ background: var(--prayer-red); border-color: var(--prayer-red); color: #fff; }
 
   .total-tile{
     background: linear-gradient(155deg, var(--panel-2), var(--panel));
@@ -645,15 +672,21 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse d-none d-lg-flex">
-      <ul class="navbar-nav ms-auto flex-nowrap align-items-lg-center" id="navLinksDesktop">
+      <ul class="navbar-nav ms-auto align-items-lg-center" id="navLinksDesktop">
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i> Overview</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="days"><i class="bi bi-calendar3"></i> Days</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i> Food</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="myplan"><i class="bi bi-journal-check"></i> My Activity</a></li>
         <li class="nav-item"><a class="nav-link" href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i> Budget</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="requests"><i class="bi bi-people"></i> Requests</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Lists</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navMoreDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots"></i> More</a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-trip" aria-labelledby="navMoreDropdown">
+            <li><a class="dropdown-item" href="#" data-tab-link="guide"><i class="bi bi-compass"></i> Places</a></li>
+            <li><a class="dropdown-item" href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i> Food</a></li>
+            <li><a class="dropdown-item" href="#" data-tab-link="shopping"><i class="bi bi-cart-check"></i> Shopping &amp; Expenses</a></li>
+            <li><a class="dropdown-item" href="#" data-tab-link="requests"><i class="bi bi-people"></i> Requests</a></li>
+            <li><a class="dropdown-item" href="#" data-tab-link="lists"><i class="bi bi-check2-square"></i> Checklists</a></li>
+          </ul>
+        </li>
         <li class="nav-item ms-lg-2"><button class="btn btn-sm btn-outline-trip" id="logoutBtnDesktop"><i class="bi bi-box-arrow-right"></i> Log out</button></li>
       </ul>
     </div>
@@ -670,6 +703,7 @@
     <ul class="nav flex-column gap-1" id="navLinksMobile">
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="trip" href="#"><i class="bi bi-signpost-split"></i> Overview — trip info, prep &amp; tips</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="days" href="#"><i class="bi bi-calendar3"></i> Day-by-Day Plan</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="myplan" href="#"><i class="bi bi-journal-check"></i> My Actual Activity</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="guide" href="#"><i class="bi bi-compass"></i> Places — stay, viewpoints, visits</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="food" href="#"><i class="bi bi-cup-hot"></i> Food — what to try &amp; your log</a></li>
       <li class="nav-item"><a class="nav-link" data-bs-dismiss="offcanvas" data-tab-link="budget" href="#"><i class="bi bi-pie-chart"></i> Budget Summary</a></li>
@@ -711,6 +745,8 @@
           <div class="stat-chip"><span class="num">11 / 9</span><span class="lbl">Days / Nights</span></div>
           <div class="stat-chip"><span class="num">Solo</span><span class="lbl">Traveller</span></div>
         </div>
+
+        <button class="btn btn-marigold mt-3" data-tab-link="myplan" type="button"><i class="bi bi-journal-check"></i> Log what I actually did today</button>
 
         <div class="card card-trip mt-3" style="max-width:520px;">
           <div class="card-body py-3">
@@ -780,13 +816,14 @@
       <div class="col-lg-6">
         <div class="card card-trip h-100" style="border-color: rgba(193,73,63,0.4);">
           <div class="card-body">
-            <span class="pill" style="background:rgba(193,73,63,0.14); color:#e07f76; border-color:rgba(193,73,63,0.4);"><i class="bi bi-exclamation-triangle"></i> Sikkim permit reality check</span>
+            <span class="pill" style="background:rgba(193,73,63,0.14); color:#e07f76; border-color:rgba(193,73,63,0.4);"><i class="bi bi-exclamation-triangle"></i> Sikkim permit reality check <span style="opacity:.7; font-weight:500;">(updated)</span></span>
             <ul class="mt-2 mb-0" style="color:var(--cream-dim); font-size:.92rem; line-height:1.7; padding-left:1.1rem;">
-              <li>RAP/PAP need prior <strong style="color:var(--cream)">Ministry of Home Affairs</strong> clearance for Bangladeshi nationals — arranged via your registered Sikkim agent, not at the border.</li>
-              <li>The SNT Complex stop in Siliguri is your <strong style="color:var(--cream)">verification/backup</strong> step only — start clearance with your agent well before 13 Nov.</li>
+              <li>The old Ministry of Home Affairs pre-clearance requirement for <strong style="color:var(--cream)">Bangladeshi nationals specifically</strong> was lifted back in Nov 2018 — that rule now applies only to Pakistan, China, Myanmar, Nigeria, Hong Kong and Taiwan nationals, not Bangladesh.</li>
+              <li>Bigger change: since <strong style="color:var(--cream)">12 Jan 2026</strong>, Sikkim stopped issuing RAP/PAP on the spot at Rangpo/Melli entirely. All foreign nationals must apply online in advance via the <strong style="color:var(--cream)">e-FRRO portal</strong> (indianfrro.gov.in) — RAP is usually self-filed, PAP is normally routed through your registered agent.</li>
+              <li>Apply after you've crossed into India but a few days before you reach Rangpo — approvals typically take 24–48 hrs. The SNT Complex stop in Siliguri is a good place to double-check your agent has this in hand, but it's no longer where the permit itself gets sorted.</li>
               <li>Solo foreigners must travel in a <strong style="color:var(--cream)">group of 2+</strong> in permit zones — a shared group tour seat satisfies this.</li>
-              <li><strong style="color:var(--cream)">Zero Point</strong> is usually off-limits to foreign nationals — get written confirmation before paying.</li>
-              <li><strong style="color:var(--cream)">Nathu La, Baba Mandir, Gurudongmar Lake</strong> are closed to all foreign nationals and are not part of this plan.</li>
+              <li><strong style="color:var(--cream)">Zero Point</strong> is now one of the three zones (with Tsomgo Lake and Yumthang Valley) explicitly open to foreign nationals through this online system — still get it confirmed in writing, since access can change.</li>
+              <li><strong style="color:var(--cream)">Nathu La, Baba Mandir, Gurudongmar Lake</strong> remain closed to all foreign nationals and are not part of this plan.</li>
             </ul>
           </div>
         </div>
@@ -799,7 +836,7 @@
           <div class="card-body">
             <i class="bi bi-file-earmark-text" style="color:var(--marigold); font-size:1.3rem;"></i>
             <h3 class="h6 mt-2 mb-1 display-font">Documents to carry</h3>
-            <p class="small mb-0" style="color:var(--cream-dim);">Originals + 2–3 photocopies of each — passport &amp; visa, 6–8 photos, hotel confirmations, bus tickets, NID copy, and your agent's written RAP/PAP status.</p>
+            <p class="small mb-0" style="color:var(--cream-dim);">Originals + 2–3 photocopies of each — passport &amp; visa, 6–8 photos, hotel confirmations, bus tickets, NID copy, and your printed e-FRRO permit approvals (RAP + PAP).</p>
           </div>
         </div>
       </div>
@@ -841,7 +878,7 @@
           <div class="cross-step"><div class="t">~6:00–7:00 AM · <span data-date-for-day="2">Sat 14 Nov</span></div><div class="d">Arrive Burimari land port. Breakfast at a stall near the terminal before immigration opens.</div></div>
           <div class="cross-step"><div class="t">~7:00–8:00 AM</div><div class="d">Bangladesh customs &amp; emigration at Burimari — passport stamped out. Keep your bag accessible for a check.</div></div>
           <div class="cross-step"><div class="t">~8:00–8:15 AM</div><div class="d">Short walk across the zero point to the Indian side at Changrabandha, Cooch Behar district.</div></div>
-          <div class="cross-step"><div class="t">~8:15–9:00 AM</div><div class="d">Indian immigration &amp; customs at Changrabandha — passport and visa stamped in. Sikkim permit is checked separately, later, at Rangpo.</div></div>
+          <div class="cross-step"><div class="t">~8:15–9:00 AM</div><div class="d">Indian immigration &amp; customs at Changrabandha — passport and visa stamped in. Your Sikkim RAP/PAP must already be approved on e-FRRO before this point — it's checked electronically further along, not stamped fresh at Rangpo like before.</div></div>
           <div class="cross-step"><div class="t">~9:00–9:30 AM</div><div class="d">Onward local transport (shared bus/jeep) towards Siliguri — board near the Changrabandha bus stand.</div></div>
           <div class="cross-step"><div class="t">~9:30 AM–12:00 PM</div><div class="d">Road journey Changrabandha → Siliguri (~90–100 km via Mainaguri/Jalpaiguri, ~2.5–3 hrs).</div></div>
           <div class="cross-step"><div class="t">~12:00–12:30 PM</div><div class="d">Arrive Siliguri — drop near Tenzing Norgay Bus Terminus / SNT Complex, Hill Cart Road, Pradhan Nagar.</div></div>
@@ -869,6 +906,9 @@
         <div class="row g-2 mb-2">
           <div class="col-6 col-md-4">
             <div class="check-item"><input type="checkbox" id="repDays" checked><label for="repDays">Day-by-day itinerary &amp; notes</label></div>
+          </div>
+          <div class="col-6 col-md-4">
+            <div class="check-item"><input type="checkbox" id="repMyActivity" checked><label for="repMyActivity">My actual activity log</label></div>
           </div>
           <div class="col-6 col-md-4">
             <div class="check-item"><input type="checkbox" id="repPlaces" checked><label for="repPlaces">Places visited</label></div>
@@ -912,6 +952,21 @@
     <div class="day-nav-scroll" id="dayJumpRow"></div>
 
     <div id="dayPanels"></div>
+  </div>
+</section>
+
+<!-- ================= MY ACTUAL ACTIVITY ================= -->
+<section id="myPlanSection" data-tab="myplan">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Your own log</div>
+      <h2>My actual day-by-day activity</h2>
+      <p>Plans change. Log what you actually did, day by day, in your own words and your own times — laid out exactly like the planned itinerary, so it's just as easy to flip through later.</p>
+    </div>
+
+    <div class="day-nav-scroll" id="myPlanJumpRow"></div>
+
+    <div id="myPlanPanels"></div>
   </div>
 </section>
 
@@ -1346,6 +1401,11 @@
 <!-- ================= CHECKLISTS ================= -->
 <section id="checklists" data-tab="lists">
   <div class="container">
+    <div class="subnav-scroll">
+      <a class="subnav-chip" href="#packDocs"><i class="bi bi-bag-check"></i>Packing &amp; Documents</a>
+      <a class="subnav-chip" href="#importantThings"><i class="bi bi-shield-exclamation"></i>Important Things</a>
+      <a class="subnav-chip" href="#preTripShop"><i class="bi bi-bag-plus"></i>Pre-trip Shopping</a>
+    </div>
     <div class="section-head">
       <div class="kicker">Live tool</div>
       <h2>Checklists</h2>
@@ -1353,7 +1413,7 @@
     </div>
 
     <div class="row g-4">
-      <div class="col-lg-6">
+      <div class="col-lg-6" id="packDocs">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h3 class="h6 display-font mb-0"><i class="bi bi-bag-check" style="color:var(--marigold);"></i> Packing &amp; documents</h3>
           <span class="small" style="color:var(--cream-dim);" id="packProgressLabel">0 / 0</span>
@@ -1362,7 +1422,7 @@
         <ul class="check-list" id="packList"></ul>
       </div>
 
-      <div class="col-lg-6">
+      <div class="col-lg-6" id="importantThings">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <h3 class="h6 display-font mb-0"><i class="bi bi-shield-exclamation" style="color:var(--prayer-red);"></i> Important things — permits &amp; rules</h3>
           <span class="small" style="color:var(--cream-dim);" id="impProgressLabel">0 / 0</span>
@@ -1372,7 +1432,7 @@
       </div>
     </div>
 
-    <div class="card card-trip mt-4">
+    <div class="card card-trip mt-4" id="preTripShop">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
           <div>
@@ -1436,7 +1496,7 @@
       <button class="btn btn-outline-trip me-2 mb-2 mb-md-0" id="exportBtn"><i class="bi bi-download"></i> Export my notes &amp; expenses (.json)</button>
       <button class="btn btn-outline-trip me-2 mb-2 mb-md-0" id="importBtn"><i class="bi bi-upload"></i> Import my data (.json)</button>
       <input type="file" id="importFileInput" accept="application/json,.json" class="d-none">
-      <button class="btn btn-outline-trip" id="resetAllBtn"><i class="bi bi-arrow-counterclockwise"></i> Reset everything</button>
+      <button class="btn btn-outline-danger-trip" id="resetAllBtn"><i class="bi bi-exclamation-triangle"></i> Reset everything</button>
       <p class="small mt-3 mb-0" style="color:var(--cream-dim);">If your browser's storage ever gets cleared, importing a previously exported .json file restores your notes, checklists, times and expenses.</p>
     </div>
   </div>
@@ -1484,6 +1544,7 @@
 <nav class="bottom-nav" id="bottomNav">
   <a href="#" data-tab-link="trip"><i class="bi bi-signpost-split"></i>Overview</a>
   <a href="#" data-tab-link="days"><i class="bi bi-calendar3"></i>Days</a>
+  <a href="#" data-tab-link="myplan"><i class="bi bi-journal-check"></i>My Log</a>
   <a href="#" data-tab-link="guide"><i class="bi bi-compass"></i>Places</a>
   <a href="#" data-tab-link="food"><i class="bi bi-cup-hot"></i>Food</a>
   <a href="#" data-tab-link="budget"><i class="bi bi-pie-chart"></i>Budget</a>
@@ -1537,7 +1598,7 @@
   ============================================================ */
   (function setupTabs(){
     const TAB_KEY = "sikkim_trip_activetab_v1";
-    const VALID_TABS = ['trip', 'days', 'guide', 'food', 'budget', 'shopping', 'requests', 'lists'];
+    const VALID_TABS = ['trip', 'days', 'myplan', 'guide', 'food', 'budget', 'shopping', 'requests', 'lists'];
 
     function showTab(tabName){
       if (!VALID_TABS.includes(tabName)) tabName = 'trip';
@@ -1673,7 +1734,7 @@
       steps:[
         ["~6:00–9:00 AM","Burimari–Changrabandha crossing (see Border Crossing section)."],
         ["~9:30 AM–12:30 PM","Onward transport to Siliguri, dropped at Tenzing Norgay Bus Terminus / Hill Cart Road."],
-        ["~12:30–1:15 PM","Walk to SNT Complex, Pradhan Nagar to verify your permit; quick lunch nearby."],
+        ["~12:30–1:15 PM","Walk to SNT Complex, Pradhan Nagar — a good spot to double-check your e-FRRO approval status with your agent, since that's no longer processed here; quick lunch nearby."],
         ["~1:30–2:00 PM","Pick up shared jeep at SNT Bus Terminus, Hill Cart Road, towards Gangtok."],
         ["~6:00–6:30 PM","Drop at Gangtok — Deorali Taxi Stand or Vajra Cinema Stand; check in; evening walk at MG Marg."]
       ]
@@ -1694,7 +1755,7 @@
       n:4, date:"Mon 16 Nov", focus:"Tsomgo Lake day tour (PAP zone)",
       steps:[
         ["~7:00–7:30 AM","Pick-up at your Gangtok hotel by your registered agent's permit vehicle."],
-        ["~9:30–10:00 AM","Arrive Tsomgo (Changu) Lake (~40 km, permit checked en route). Baba Mandir/Nathula excluded — closed to foreigners."],
+        ["~9:30–10:00 AM","Arrive Tsomgo (Changu) Lake (~40 km, your pre-approved e-FRRO permit checked en route). Baba Mandir/Nathula excluded — closed to foreigners."],
         ["~12:00–1:00 PM","Start return drive."],
         ["~2:30–3:00 PM","Drop back at your Gangtok hotel; rest of the day free."]
       ]
@@ -1833,7 +1894,7 @@
     "Printed hotel booking confirmations — first nights in Siliguri &amp; Gangtok",
     "Printed Dhaka–Burimari bus ticket (onward and return)",
     "Bangladesh NID copy + extra photocopies of passport bio &amp; visa page",
-    "Written RAP/PAP confirmation from your registered Sikkim agent (incl. Zero Point status)",
+    "Printed e-FRRO permit approvals — RAP and PAP (incl. Zero Point) — applied online in advance",
     "Small BDT→INR (or a little USD) for the first few hours",
     "Plan to withdraw bulk INR from a Siliguri ATM",
     "Small INR notes (Rs. 100 / Rs. 500) for jeeps and small shops",
@@ -1844,17 +1905,18 @@
   ];
 
   const IMPORTANT_ITEMS = [
-    "Contact your registered Sikkim agent now to start RAP/PAP (MHA) clearance",
-    "Get written confirmation on whether Zero Point is achievable for your passport",
+    "Apply for your RAP on the e-FRRO portal (indianfrro.gov.in) yourself, or confirm your agent is doing it — physical permits are no longer issued at Rangpo/Melli since Jan 2026",
+    "Confirm your registered agent is filing your PAP (Tsomgo Lake + North Sikkim) on e-FRRO, with your itinerary and their details as sponsor",
+    "Apply a few days before reaching Rangpo — e-FRRO approvals typically take 24–48 hrs, don't leave it for the border",
+    "Get written confirmation from your agent that Zero Point is included in your North Sikkim permit application",
     "Confirm your bus crosses at Burimari–Changrabandha, matching your visa",
     "Confirm through-ticket vs. self-arranged Changrabandha–Siliguri leg with the operator",
     "Book Gangtok's first night in advance — useful for permit paperwork",
     "Remember: solo foreigners need a group of 2+ in permit zones (Tsomgo, North Sikkim) — a shared tour seat covers this",
-    "Get written agent confirmation on exactly which North Sikkim points are included, before paying",
     "Accept that Nathu La, Baba Mandir &amp; Gurudongmar Lake are closed to foreign nationals — not in this plan",
     "Buy a local SIM (Airtel/Jio/Vi) in Siliguri — carry a passport copy for registration",
     "Carry cash once in the hills — card acceptance drops away from MG Marg/Mall Road",
-    "Re-confirm bus timings, permit rules and prices closer to your travel date"
+    "Re-confirm permit rules, bus timings and prices closer to your travel date — this process changed twice already (2018 and Jan 2026)"
   ];
 
   const TIPS = [
@@ -1884,7 +1946,9 @@
     preShop: "sikkim_trip_preshop_v1",
     forOthers: "sikkim_trip_forothers_v1",
     visitLog: "sikkim_trip_visitlog_v1",
-    activityLog: "sikkim_trip_activitylog_v1"
+    activityLog: "sikkim_trip_activitylog_v1",
+    myActivity: "sikkim_trip_myactivity_v1",
+    myActivityTitle: "sikkim_trip_myactivitytitle_v1"
   };
 
   function loadJSON(key, fallback){
@@ -2039,7 +2103,9 @@
     [LS_KEYS.startDate]: 'Trip start date',
     [LS_KEYS.preShop]: 'Pre-trip shopping checklist',
     [LS_KEYS.forOthers]: 'Requests (bring from India)',
-    [LS_KEYS.visitLog]: 'Visited places log'
+    [LS_KEYS.visitLog]: 'Visited places log',
+    [LS_KEYS.myActivity]: 'My actual activity log',
+    [LS_KEYS.myActivityTitle]: 'My day titles'
   };
 
   function logCustomActivity(text){
@@ -2091,6 +2157,13 @@
 
   if (cloudSyncEnabled && typeof firebase.auth === 'function'){
     authInstance = firebase.auth();
+
+    // SESSION persistence: signed-in state clears when the browser (tab/
+    // window) is closed, so it asks for the password again next time,
+    // rather than staying signed in indefinitely like the default behavior.
+    try{
+      await authInstance.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+    }catch(e){ console.warn('Could not set session-only persistence:', e); }
 
     let currentUser = await new Promise((resolve) => {
       const unsub = authInstance.onAuthStateChanged((u) => { unsub(); resolve(u); });
@@ -2167,6 +2240,11 @@
       console.warn('Cloud sync unavailable, using local data only:', e);
       showSyncStatus('offline');
     }
+    // activityLog was loaded into memory earlier (before this pull, to avoid
+    // a startup crash) — refresh it now so entries from every signed-in
+    // user actually show, not just this device's own history.
+    activityLog = loadJSON(LS_KEYS.activityLog, []);
+    renderActivityLog();
   }
 
   let notesData = loadJSON(LS_KEYS.notes, {});
@@ -2180,6 +2258,8 @@
   let preShopList = loadJSON(LS_KEYS.preShop, []);
   let forOthersList = loadJSON(LS_KEYS.forOthers, []);
   let visitLog = loadJSON(LS_KEYS.visitLog, []);
+  let myActivity = loadJSON(LS_KEYS.myActivity, {});
+  let myActivityTitle = loadJSON(LS_KEYS.myActivityTitle, {});
 
   /* ============================================================
      TRIP DATES — recompute every day's calendar date from a
@@ -2494,6 +2574,282 @@
     saveJSON(LS_KEYS.planChanges, planChanges);
     renderPlanChanges(dayN);
   });
+
+  /* ============================================================
+     MY ACTUAL ACTIVITY — a second, independent day-by-day log the
+     user builds themselves (time + what they did), laid out exactly
+     like the planned itinerary but fully editable. Uses its own
+     .myplan-panel / .myplan-jump classes so it never interferes
+     with the planned Days tab's own show/hide logic.
+  ============================================================ */
+  const myPlanPanelsEl = document.getElementById('myPlanPanels');
+  const myPlanJumpRow = document.getElementById('myPlanJumpRow');
+
+  function showMyPlanDay(dayN){
+    myPlanPanelsEl.querySelectorAll('.myplan-panel').forEach(p => {
+      p.classList.toggle('panel-visible', Number(p.getAttribute('data-myplan-panel')) === dayN);
+    });
+    myPlanJumpRow.querySelectorAll('.myplan-jump').forEach(c => {
+      c.classList.toggle('active', Number(c.getAttribute('data-myplan-jump')) === dayN);
+    });
+    try{ localStorage.setItem('sikkim_trip_myplan_activeday_v1', JSON.stringify(dayN)); }catch(e){ /* storage unavailable */ }
+    const panel = myPlanPanelsEl.querySelector(`.myplan-panel[data-myplan-panel="${dayN}"]`);
+    if (panel){
+      const rowBottom = myPlanJumpRow.getBoundingClientRect().bottom;
+      const panelTop = panel.getBoundingClientRect().top;
+      window.scrollBy({ top: panelTop - rowBottom - 12, behavior: 'smooth' });
+    }
+  }
+
+  function renderMyPlanDay(dayN){
+    const timelineEl = document.getElementById('myplan-timeline-' + dayN);
+    const emptyEl = document.getElementById('myplan-empty-' + dayN);
+    if (!timelineEl) return;
+    const entries = (myActivity[dayN] || []).slice().sort((a, b) => {
+      const aStart = a.start || a.time || '';
+      const bStart = b.start || b.time || '';
+      if (aStart && bStart) return aStart.localeCompare(bStart);
+      if (aStart) return -1;
+      if (bStart) return 1;
+      return a.id - b.id;
+    });
+    timelineEl.innerHTML = "";
+    if (!entries.length){
+      emptyEl.classList.remove('d-none');
+    } else {
+      emptyEl.classList.add('d-none');
+    }
+    entries.forEach(entry => {
+      const start = entry.start || entry.time || '';
+      const end = entry.end || '';
+      let label = 'No time set';
+      if (start && end) label = `${start} – ${end}`;
+      else if (start) label = start;
+      else if (end) label = `Until ${end}`;
+      const zone = entry.zone || '';
+      const zoneBadge = zone ? `<span class="tz-badge ${zone === 'BDT' ? 'bdt' : ''}">${zone}</span>` : '';
+
+      const step = document.createElement('div');
+      step.className = "step";
+      step.innerHTML = `
+        <div class="d-flex justify-content-between align-items-start gap-2">
+          <div class="tm d-flex align-items-center gap-2 flex-wrap">${label}${zoneBadge}</div>
+          <div class="d-flex gap-2 flex-shrink-0">
+            <button class="expense-row-del" data-myplan-edit="${entry.id}" data-myplan-day="${dayN}" title="Edit"><i class="bi bi-pencil"></i></button>
+            <button class="expense-row-del" data-myplan-del="${entry.id}" data-myplan-day="${dayN}" title="Remove"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div class="tx">${entry.desc}</div>
+      `;
+      timelineEl.appendChild(step);
+    });
+  }
+
+  DAYS.forEach(day => {
+    // Jump chip
+    const chip = document.createElement('a');
+    chip.href = "#";
+    chip.className = "myplan-jump";
+    chip.setAttribute('data-myplan-jump', day.n);
+    chip.textContent = "Day " + day.n;
+    chip.addEventListener('click', (e) => {
+      e.preventDefault();
+      showMyPlanDay(day.n);
+    });
+    myPlanJumpRow.appendChild(chip);
+
+    // Day panel — log on the left, add/edit form on the right (stacks with
+    // form first on narrow screens, so you fill it in before scrolling to
+    // the log below it).
+    const defaultZone = (day.n === 1 || day.n === 11) ? "BDT" : "IST";
+    const savedTitle = myActivityTitle[day.n] || "";
+    const item = document.createElement('div');
+    item.className = "myplan-panel";
+    item.setAttribute('data-myplan-panel', day.n);
+    item.id = "myplan-day-" + day.n;
+    item.innerHTML = `
+      <div class="day-panel-header">
+        <span class="day-badge">${day.n}</span>
+        <span class="day-title-wrap">
+          <span id="myplan-title-display-${day.n}">Day ${day.n}${savedTitle ? ' — ' + savedTitle : ''}</span>
+          <span class="dsub" data-date-for-day="${day.n}">${day.date}</span>
+        </span>
+      </div>
+      <div class="day-panel-body">
+        <div class="mb-3">
+          <label class="atg-label d-block mb-1">Day title (optional)</label>
+          <input type="text" class="form-control dark-input" id="myplan-daytitle-${day.n}" placeholder="e.g. Dhaka → overnight to Burimari" value="${savedTitle}">
+        </div>
+        <div class="row g-3">
+          <div class="col-lg-7 order-2 order-lg-1">
+            <div class="day-timeline" id="myplan-timeline-${day.n}"></div>
+            <div class="empty-state d-none" id="myplan-empty-${day.n}">
+              <i class="bi bi-journal-plus d-block mb-2"></i>
+              Nothing logged yet for this day.
+            </div>
+          </div>
+          <div class="col-lg-5 order-1 order-lg-2">
+            <div class="myplan-form-box">
+              <h4 class="h6 mb-3" id="myplan-form-title-${day.n}" style="color:var(--marigold);"><i class="bi bi-plus-lg"></i> Add an activity</h4>
+              <input type="hidden" id="myplan-editid-${day.n}" value="">
+              <div class="row g-2 mb-2">
+                <div class="col-4">
+                  <label class="atg-label d-block mb-1">Start time</label>
+                  <input type="time" class="form-control dark-input" id="myplan-start-${day.n}">
+                </div>
+                <div class="col-4">
+                  <label class="atg-label d-block mb-1">End time</label>
+                  <input type="time" class="form-control dark-input" id="myplan-end-${day.n}">
+                </div>
+                <div class="col-4">
+                  <label class="atg-label d-block mb-1">Zone</label>
+                  <select class="form-select dark-input" id="myplan-zone-${day.n}">
+                    <option value="BDT" ${defaultZone === 'BDT' ? 'selected' : ''}>BDT</option>
+                    <option value="IST" ${defaultZone === 'IST' ? 'selected' : ''}>IST</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="atg-label d-block mb-1">What did you actually do</label>
+                <textarea class="form-control dark-input" id="myplan-desc-${day.n}" rows="2" placeholder="e.g. Stopped for tea at a roadside stall near Kabi"></textarea>
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-marigold flex-grow-1" data-myplan-add="${day.n}" type="button"><i class="bi bi-plus-lg"></i> Add</button>
+                <button class="btn btn-outline-trip d-none" data-myplan-cancel="${day.n}" id="myplan-cancel-${day.n}" type="button">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    myPlanPanelsEl.appendChild(item);
+    renderMyPlanDay(day.n);
+  });
+
+  function resetMyPlanForm(dayN){
+    document.getElementById('myplan-editid-' + dayN).value = "";
+    document.getElementById('myplan-start-' + dayN).value = "";
+    document.getElementById('myplan-end-' + dayN).value = "";
+    document.getElementById('myplan-desc-' + dayN).value = "";
+    const btn = myPlanPanelsEl.querySelector(`[data-myplan-add="${dayN}"]`);
+    if (btn) btn.innerHTML = '<i class="bi bi-plus-lg"></i> Add';
+    const titleEl = document.getElementById('myplan-form-title-' + dayN);
+    if (titleEl) titleEl.innerHTML = '<i class="bi bi-plus-lg"></i> Add an activity';
+    const cancelBtn = document.getElementById('myplan-cancel-' + dayN);
+    if (cancelBtn) cancelBtn.classList.add('d-none');
+  }
+
+  function saveMyPlanEntry(dayN){
+    const editIdEl = document.getElementById('myplan-editid-' + dayN);
+    const startInput = document.getElementById('myplan-start-' + dayN);
+    const endInput = document.getElementById('myplan-end-' + dayN);
+    const zoneInput = document.getElementById('myplan-zone-' + dayN);
+    const descInput = document.getElementById('myplan-desc-' + dayN);
+    const desc = descInput.value.trim();
+    if (!desc) return;
+    if (!myActivity[dayN]) myActivity[dayN] = [];
+
+    const editId = editIdEl.value;
+    if (editId){
+      const entry = myActivity[dayN].find(x => String(x.id) === String(editId));
+      if (entry){
+        entry.start = startInput.value;
+        entry.end = endInput.value;
+        entry.zone = zoneInput.value;
+        entry.desc = desc;
+        delete entry.time; // superseded by start/end once edited
+      }
+    } else {
+      myActivity[dayN].push({ id: Date.now(), start: startInput.value, end: endInput.value, zone: zoneInput.value, desc });
+    }
+    saveJSON(LS_KEYS.myActivity, myActivity);
+    resetMyPlanForm(dayN);
+    renderMyPlanDay(dayN);
+  }
+
+  function startEditMyPlanEntry(dayN, id){
+    const entry = (myActivity[dayN] || []).find(x => String(x.id) === String(id));
+    if (!entry) return;
+    document.getElementById('myplan-editid-' + dayN).value = id;
+    document.getElementById('myplan-start-' + dayN).value = entry.start || entry.time || "";
+    document.getElementById('myplan-end-' + dayN).value = entry.end || "";
+    const zoneSel = document.getElementById('myplan-zone-' + dayN);
+    if (zoneSel && entry.zone) zoneSel.value = entry.zone;
+    document.getElementById('myplan-desc-' + dayN).value = entry.desc;
+    const btn = myPlanPanelsEl.querySelector(`[data-myplan-add="${dayN}"]`);
+    if (btn) btn.innerHTML = '<i class="bi bi-check2"></i> Update';
+    const titleEl = document.getElementById('myplan-form-title-' + dayN);
+    if (titleEl) titleEl.innerHTML = '<i class="bi bi-pencil"></i> Edit this activity';
+    const cancelBtn = document.getElementById('myplan-cancel-' + dayN);
+    if (cancelBtn) cancelBtn.classList.remove('d-none');
+    document.getElementById('myplan-start-' + dayN).focus();
+  }
+
+  // day-title autosave (debounced)
+  let myPlanTitleTimers = {};
+  myPlanPanelsEl.querySelectorAll('[id^="myplan-daytitle-"]').forEach(input => {
+    const dayN = input.id.replace('myplan-daytitle-', '');
+    input.addEventListener('input', () => {
+      const val = input.value.trim();
+      myActivityTitle[dayN] = val;
+      const displayEl = document.getElementById('myplan-title-display-' + dayN);
+      if (displayEl) displayEl.textContent = 'Day ' + dayN + (val ? ' — ' + val : '');
+      clearTimeout(myPlanTitleTimers[dayN]);
+      myPlanTitleTimers[dayN] = setTimeout(() => saveJSON(LS_KEYS.myActivityTitle, myActivityTitle), 500);
+    });
+  });
+
+  myPlanPanelsEl.addEventListener('click', (e) => {
+    const addBtn = e.target.closest('[data-myplan-add]');
+    if (addBtn){
+      saveMyPlanEntry(addBtn.getAttribute('data-myplan-add'));
+      return;
+    }
+    const cancelBtn = e.target.closest('[data-myplan-cancel]');
+    if (cancelBtn){
+      resetMyPlanForm(cancelBtn.getAttribute('data-myplan-cancel'));
+      return;
+    }
+    const editBtn = e.target.closest('[data-myplan-edit]');
+    if (editBtn){
+      startEditMyPlanEntry(editBtn.getAttribute('data-myplan-day'), editBtn.getAttribute('data-myplan-edit'));
+      return;
+    }
+    const delBtn = e.target.closest('[data-myplan-del]');
+    if (delBtn){
+      const id = delBtn.getAttribute('data-myplan-del');
+      const dayN = delBtn.getAttribute('data-myplan-day');
+      myActivity[dayN] = (myActivity[dayN] || []).filter(x => String(x.id) !== String(id));
+      saveJSON(LS_KEYS.myActivity, myActivity);
+      if (document.getElementById('myplan-editid-' + dayN).value === id) resetMyPlanForm(dayN);
+      renderMyPlanDay(dayN);
+    }
+  });
+  myPlanPanelsEl.addEventListener('keydown', (e) => {
+    const descInput = e.target.closest('[id^="myplan-desc-"]');
+    if (descInput && e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      saveMyPlanEntry(descInput.id.replace('myplan-desc-', ''));
+    }
+  });
+
+  // show the remembered day (or Day 1) without an animated scroll on first load
+  (function initMyPlanView(){
+    let startDay = 1;
+    try{
+      const raw = localStorage.getItem('sikkim_trip_myplan_activeday_v1');
+      if (raw){
+        const n = JSON.parse(raw);
+        if (Number.isInteger(n) && n >= 1 && n <= DAYS.length) startDay = n;
+      }
+    }catch(e){ /* storage unavailable */ }
+    myPlanPanelsEl.querySelectorAll('.myplan-panel').forEach(p => {
+      p.classList.toggle('panel-visible', Number(p.getAttribute('data-myplan-panel')) === startDay);
+    });
+    myPlanJumpRow.querySelectorAll('.myplan-jump').forEach(c => {
+      c.classList.toggle('active', Number(c.getAttribute('data-myplan-jump')) === startDay);
+    });
+  })();
 
   /* ============================================================
      RENDER: STAY
@@ -3458,6 +3814,41 @@
       });
     }
 
+    if (document.getElementById('repMyActivity').checked){
+      heading('My actual activity log');
+      let anyMyActivity = false;
+      DAYS.forEach(day => {
+        const entries = (myActivity[day.n] || []).slice().sort((a, b) => {
+          const aStart = a.start || a.time || '';
+          const bStart = b.start || b.time || '';
+          if (aStart && bStart) return aStart.localeCompare(bStart);
+          if (aStart) return -1;
+          if (bStart) return 1;
+          return a.id - b.id;
+        });
+        if (!entries.length) return;
+        anyMyActivity = true;
+        const title = myActivityTitle[day.n];
+        ensureSpace(12);
+        doc.setFont(undefined, 'bold'); doc.setFontSize(11);
+        doc.text(pdfSafe(`Day ${day.n}${title ? ' - ' + title : ''}`), 10, y); y += 6;
+        doc.setFont(undefined, 'normal'); doc.setFontSize(10);
+
+        const rows = entries.map(entry => {
+          const start = entry.start || entry.time || '';
+          const end = entry.end || '';
+          const timeStr = (start || end) ? `${start || '?'} - ${end || '?'}` : '-';
+          const zone = entry.zone || '';
+          return [timeStr, zone, entry.desc];
+        });
+        table(['Time', 'Zone', 'What I did'], rows, {
+          columnStyles: { 0: { cellWidth: 32 }, 1: { cellWidth: 18 } }
+        });
+        y += 3;
+      });
+      if (!anyMyActivity) line('Nothing logged yet.');
+    }
+
     if (document.getElementById('repPlaces').checked){
       heading('Places visited');
       if (!visitLog.length){
@@ -3575,7 +3966,9 @@
       actualTimes: actualTimes,
       tripStartDate: tripStartDate,
       preShopList: preShopList,
-      forOthersList: forOthersList
+      forOthersList: forOthersList,
+      myActivity: myActivity,
+      myActivityTitle: myActivityTitle
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
     const url = URL.createObjectURL(blob);
@@ -3607,7 +4000,9 @@
         [LS_KEYS.startDate]: "2026-11-13",
         [LS_KEYS.preShop]: [],
         [LS_KEYS.forOthers]: [],
-        [LS_KEYS.visitLog]: []
+        [LS_KEYS.visitLog]: [],
+        [LS_KEYS.myActivity]: {},
+        [LS_KEYS.myActivityTitle]: {}
       };
       Object.entries(defaults).forEach(([k, v]) => {
         try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ /* storage unavailable */ }
@@ -3649,7 +4044,7 @@
       const looksValid = data && typeof data === 'object' && (
         data.notes || data.expenses || data.packingChecklist || data.importantChecklist ||
         data.planChanges || data.shoppingList || data.actualTimes || data.fxRate !== undefined ||
-        data.tripStartDate || data.preShopList || data.forOthersList
+        data.tripStartDate || data.preShopList || data.forOthersList || data.myActivity
       );
       if (!looksValid){
         alert("That JSON file doesn't match this planner's export format.");
@@ -3669,7 +4064,7 @@
         ['notes', LS_KEYS.notes], ['packingChecklist', LS_KEYS.pack], ['importantChecklist', LS_KEYS.important],
         ['expenses', LS_KEYS.expenses], ['planChanges', LS_KEYS.planChanges], ['shoppingList', LS_KEYS.shopList],
         ['actualTimes', LS_KEYS.actualTimes], ['tripStartDate', LS_KEYS.startDate],
-        ['preShopList', LS_KEYS.preShop], ['forOthersList', LS_KEYS.forOthers]
+        ['preShopList', LS_KEYS.preShop], ['forOthersList', LS_KEYS.forOthers], ['myActivity', LS_KEYS.myActivity], ['myActivityTitle', LS_KEYS.myActivityTitle]
       ];
       fieldMap.forEach(([srcKey, lsKey]) => {
         if (data[srcKey] !== undefined) localStorage.setItem(lsKey, JSON.stringify(data[srcKey]));
